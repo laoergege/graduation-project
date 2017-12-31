@@ -12,7 +12,7 @@ import Login from "grommet/components/icons/base/Login";
 export default class extends PureComponent {
     render() {
         return (
-            <Header justify="center" colorIndex="light-1">
+            <Header justify="center" colorIndex="light-1" separator="bottom">
                 <Box size={{ width: { max: 'xxlarge' } }} direction="row"
                     responsive={false} justify="start" align="baseline"
                     pad={{ horizontal: 'medium' }} flex="grow">

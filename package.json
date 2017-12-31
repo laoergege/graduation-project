@@ -23,6 +23,7 @@
     "markdown-to-jsx": "^5.3.3",
     "meteor-node-stubs": "^0.3.2",
     "moment": "^2.13.0",
+    "ory-editor": "^0.2.25",
     "prop-types": "^15.5.8",
     "react": "^16.2.0",
     "react-desc": "^1.0.0",
@@ -31,6 +32,7 @@
     "react-router": "^4.2.0",
     "react-router-config": "^1.0.0-beta.4",
     "react-router-dom": "^4.2.2",
+    "react-tap-event-plugin": "^3.0.2",
     "react-transition-group": "^1.1.1",
     "styled-components": "^2.4.0",
     "superagent": "^3.6.0"
