@@ -1,5 +1,7 @@
 import React, { PureComponent } from "react";
 
+import { Link } from "react-router-dom";
+
 import Header from 'grommet/components/Header';
 import Title from 'grommet/components/Title';
 import Box from 'grommet/components/Box';
@@ -19,7 +21,9 @@ export default class extends PureComponent {
                     </Title>
                     <Box pad="small" />
                     <Menu inline={true} direction="row" flex="grow" size="small">
-                        <Anchor href="#">首页</Anchor>
+                        <Anchor tag="div">
+                            <Link to="/NotFound">首页</Link>
+                        </Anchor>
                         <Anchor href="#">课程</Anchor>
                         <Anchor href="#">答疑</Anchor>
                         <Anchor href="#">搜索</Anchor>

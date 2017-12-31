@@ -2,3 +2,70 @@
 * grommet 样式
 */
 @import "{}/node_modules/grommet/grommet.min.scss";
+$brand-color: #865cd6 !default;
+
+@keyframes loading {
+    to{
+        left: 0;
+    }
+}
+
+.loading{
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: whitesmoke;
+
+    .content{
+        display: flex;
+        font-size: 2rem;
+        align-items: baseline;
+        font-style: italic;
+        font-family: cursive;
+        align-items: center;
+        position: relative;
+        color: $brand-color;
+        
+        .layer{
+            height: 100vh;
+            background-color: whitesmoke;
+            opacity: .8;
+            position: absolute;
+            animation-name: loading;
+            animation-duration: 5s;
+            animation-timing-function: linear;  
+            animation-iteration-count: infinite;
+            transform: skew(160deg);
+            width: 760px;   
+            left: -760px;  
+        }
+
+        h2{
+            margin-top: 8rem;
+        }
+    }
+
+    .separator{
+        width: 3px;
+        height: 60vh;  
+        transform: skew(160deg);
+        background-color: #666;
+        margin: 20px;
+    }
+
+}
+
+@media screen and (max-width: 600px){
+    .loading{
+        .content{
+            font-size: 1rem;
+        } 
+
+        .separator{
+            height: 30vh;  
+        }
+    }
+}
