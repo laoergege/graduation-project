@@ -1,19 +1,20 @@
 import React, { Component } from 'react'
 import { withTracker } from 'meteor/react-meteor-data';
 
-import { BrowserRouter, Route, IndexRoute } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
 import Index from "../../ui/pages/index";
+import NotFound from "../../ui/pages/notFound";
 
 export class App extends Component {
     render() {
         return (
-            <BrowserRouter>
-                <Route exact path='/' render={() => {
-                    return (<Index />)
-                }} >
-                </Route>
-            </BrowserRouter>
+            <Switch>
+                <Route exact path='/' render={(props) => {
+                    return (<Index {...props} />)
+                }} />
+                <Route component={NotFound} />
+            </Switch>
         )
     }
 }
