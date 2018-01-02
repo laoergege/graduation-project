@@ -24,6 +24,7 @@
     "meteor-node-stubs": "^0.3.2",
     "moment": "^2.13.0",
     "ory-editor": "^0.2.25",
+    "ory-editor-plugins-html5-video": "^0.2.25",
     "prop-types": "^15.5.8",
     "react": "^16.2.0",
     "react-desc": "^1.0.0",
