@@ -3,10 +3,22 @@ import React, { Component } from 'react'
 import Box from 'grommet/components/Box';
 import Header from "../../components/header";
 import Main from "../../components/main";
+import Notification from "../../components/notification";
 
-// import SecondInfo from "../../components/secondInfo";
+import { Session } from "meteor/session";
 
 export default class Index extends Component {
+
+    // 登录
+    login = ({username, password}, toggle) => {
+        Meteor.loginWithPassword(username, password, (error) => {
+            if(error)
+                Session.set('info', {status: 'warning', content: '用户名或密码错误！'});
+            else
+                toggle();
+        })
+    }
+
     render() {
         return (
             <Box justify='start'
@@ -21,10 +33,11 @@ export default class Index extends Component {
                 separator="bottom"
                 wrap={false}>
 
-                <Header />
+                <Header login={this.login}/>
 
                 <Main />
                
+                <Notification />
             </Box>
         )
     }
