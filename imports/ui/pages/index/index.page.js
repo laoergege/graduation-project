@@ -14,8 +14,11 @@ export default class Index extends Component {
         Meteor.loginWithPassword(username, password, (error) => {
             if(error)
                 Session.set('info', {status: 'warning', content: '用户名或密码错误！'});
-            else
+            else{
                 toggle();
+                // 订阅用户信息
+                Meteor.subscribe("Meteor.users.initials");
+            }
         })
     }
 

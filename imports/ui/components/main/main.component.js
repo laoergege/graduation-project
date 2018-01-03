@@ -6,10 +6,17 @@ import Box from 'grommet/components/Box';
 import Menu from "grommet/components/Menu";
 import Anchor from "grommet/components/Anchor";
 import Split from "grommet/components/Split";
+import Edit from "grommet/components/icons/base/Edit";
 
 import Header from "../header";
 
 export default class Main extends Component {
+
+    release = (e) => {
+        e.preventDefault();
+        this.props.release();
+    }
+
     render() {
         return (
             <div className="main-v-2018112205">
@@ -24,7 +31,7 @@ export default class Main extends Component {
                         flex={true} >
                         <Box size={{ width: 'xxlarge', height: 'medium' }} direction="row" responsive={true}
                             pad="small">
-                            {this.props.editor() || 'Write it'}
+                            {this.props.editor('CourseInfo') || 'Write it'}
                         </Box>
                     </Box>
 
@@ -33,17 +40,33 @@ export default class Main extends Component {
                         <Box size={{ width: 'xxlarge' }} direction="row" responsive={true} >
                             <Menu responsive={false}
                                 inline={true}
-                                direction='row'>
+                                direction='row'
+                                align="baseline">
                                 <Anchor href='#'
                                     className='active'>
                                     课程简介
-                            </Anchor>
+                                </Anchor>
                                 <Anchor href='#'>
                                     教师简介
-                            </Anchor>
+                                </Anchor>
                                 <Anchor href='#'>
                                     评价
-                            </Anchor>
+                                </Anchor>
+
+                                {
+                                    Session.get('permissions').editCourse && (
+                                        <Anchor href='#' onClick={this.release}>
+                                            发布/更新
+                                        </Anchor>
+                                    )
+                                }
+                                {
+                                    Session.get('permissions').editContent && (
+                                        <Anchor href='#' icon={<Edit />}>
+                                            编辑章节内容
+                                        </Anchor>
+                                    )
+                                }
                             </Menu>
                         </Box>
                     </Box>
@@ -51,17 +74,17 @@ export default class Main extends Component {
 
                 <Box
                     size={{ width: 'full' }}
-                    margin={{ top: 'small'}}
-                    pad={{between: "small"}} justify="center" direction="row">
-                  
+                    margin={{ top: 'small' }}
+                    pad={{ between: "small" }} justify="center" direction="row">
+
                     <Box colorIndex="light-1"
                         justify='center'
                         align='center'
                         pad='medium'
                         size={{ width: 'xxlarge' }}>
-                        {this.props.editor() || 'Write it'}
+                        {this.props.editor('CourseMainInfo') || 'Write it'}
                     </Box>
-                    <Box 
+                    <Box
                         colorIndex="ok"
                         justify='center'
                         align='center'
@@ -76,3 +99,9 @@ export default class Main extends Component {
         )
     }
 }
+
+/**
+ * props
+ * 
+ * release 回调函数，用于发布更新课程信息
+ */

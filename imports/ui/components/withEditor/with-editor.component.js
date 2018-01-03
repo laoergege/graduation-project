@@ -33,6 +33,8 @@ import divider from 'ory-editor-plugins-divider'
 
 require('react-tap-event-plugin')();
 
+import './style.scss';
+
 const plugins = {
     content: [slate(), image, video, spacer, divider, html5video],
     layout: [parallax({ defaultPlugin: slate() })],
@@ -40,7 +42,7 @@ const plugins = {
 }
 
 
-import defaultContent from "./content";
+import defaultContent from "./contents";
 
 const editor = new Editor({
     plugins,
@@ -54,12 +56,12 @@ export default function withEditor(C) {
         render() {
             return (
                 <div>
-                    <C editor={() => {
+                    <C {...this.props} editor={(key) => {
                         let content = createEmptyState();
 
                         editor.trigger.editable.add(content)
 
-                        return (<Editable editor={editor} id={content.id} />)
+                        return (<Editable editor={editor} id={content.id} onChange={this.props.onChange} />)
                     }} />
 
                     <Trash editor={editor} />
@@ -71,4 +73,9 @@ export default function withEditor(C) {
     }
 
 }
+
+/**
+ * props
+ * onChange 回调函数监听用户编辑，回调参数 contents 用于获取编辑内容
+ */
 

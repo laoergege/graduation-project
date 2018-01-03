@@ -14,7 +14,7 @@ import LoginForm from 'grommet/components/LoginForm';
 import Close from 'grommet/components/icons/base/Close';
 import Button from 'grommet/components/Button';
 import UserSettings from 'grommet/components/icons/base/UserSettings';
-
+import Logout from 'grommet/components/icons/base/Logout';
 
 export default class extends PureComponent {
 
@@ -32,6 +32,14 @@ export default class extends PureComponent {
         this.setState((pre) => ({
             logining: !pre.logining
         }))
+    }
+
+    logout = (e) => {
+        e.preventDefault();
+
+        Meteor.logout();
+        // 清楚会话
+        Session.keys = {};
     }
 
     render() {
@@ -55,7 +63,7 @@ export default class extends PureComponent {
 
                     <Box>
                         {
-                            !this.props.user() ? (
+                            !this.props.user ? (
                                 <Anchor style={{ height: '50px' }} icon={<Login size="small" />}
                                     href='#' onClick={this.toggoleLogForm}>
                                     登录
@@ -63,17 +71,12 @@ export default class extends PureComponent {
                             ) : (
                                     <Menu responsive={true}
                                         icon={<UserSettings colorIndex="brand"/>}
-                                        label={this.props.user().profile.name}
+                                        label={this.props.user.profile.name}
                                         primary={false}>
-                                        <Anchor href='#'
-                                            className='active'>
-                                            First action
-                                        </Anchor>
-                                            <Anchor href='#'>
-                                                Second action
-                                        </Anchor>
-                                            <Anchor href='#'>
-                                                Third action
+                                        <Anchor icon={<Logout />}
+                                            onClick={this.logout}
+                                            href='#'>
+                                            注销
                                         </Anchor>
                                     </Menu>
                                 )

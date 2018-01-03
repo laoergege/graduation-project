@@ -1,5 +1,8 @@
 import { Meteor } from 'meteor/meteor';
-import { Accounts } from 'meteor/accounts-base'
+import { Accounts } from 'meteor/accounts-base';
+
+import "../imports/api/course";
+import "../imports/api/users";
 
 Meteor.startup(() => {
     // 创建 root 账号
@@ -11,7 +14,12 @@ Meteor.startup(() => {
                 name: 'laoergege',
                 avater: '',
                 intro: ''
-            },
+            }
+        })
+    }
+    // 添加权限
+    Meteor.users.update({username: 'root'}, {
+        $set: {
             permissions: [
                 {
                     "name": "课程-获取",
@@ -63,6 +71,6 @@ Meteor.startup(() => {
                     "allow": true
                 }
             ]
-        })
-    }
+        }
+    })
 })
