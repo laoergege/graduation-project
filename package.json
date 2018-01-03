@@ -6,10 +6,12 @@
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
+    "bcrypt": "^1.0.3",
     "classnames": "^2.2.3",
     "deep-assign": "^2.0.0",
     "grommet": "^1.9.0",
     "hammerjs": "^2.0.1",
+    "indexof": "0.0.1",
     "intl": "^1.0.0",
     "inuit-defaults": "~0.2.1",
     "inuit-functions": "~0.2.0",
@@ -35,6 +37,8 @@
     "react-router-dom": "^4.2.2",
     "react-tap-event-plugin": "^3.0.2",
     "react-transition-group": "^1.1.1",
+    "slate": "^0.31.8",
+    "slate-edit-blockquote": "^0.5.0",
     "styled-components": "^2.4.0",
     "superagent": "^3.6.0"
   }

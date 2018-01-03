@@ -21,6 +21,8 @@ export function auth(auth_name) {
  * @param {*} error 
  */
 export function errorHnadler(error) {
+    console.log(error);
     error.error === "unauthorized-error" && Session.set('info', {status: 'critical', content: error.reason});
     error.error === "validation-error" && Session.set('info', {status: 'warning', content: error.reason});
 }
+

@@ -1,34 +1,33 @@
 import Main from "./main.component";
 import withEditor from "../withEditor";
 import { withTracker } from 'meteor/react-meteor-data';
-import { editCourse } from "../../../api/course";
+import { editCourse, courses } from "../../../api/course";
 import { errorHnadler } from "../../../utils/util";
-
-let info = null;    // 课程基本介绍
-let mainInfo = null;    // 课程简介和教师简介
+import { replaceParagraphType } from "../../components/withEditor/with-editor.component";
 
 // 发布、更新课程
 function release() {
-    editCourse.call({info: info, mainInfo: mainInfo }, (error) => {
-        error && errorHnadler(error);
-        Session.set('info', {status: 'ok', content: '该课程 发布/更新 成功'});
-    })
-}
-// 监听用户编辑课程基本信息
-function onChange(content) {
-    if (!info) {
-        info = content;
-        return;
-    } 
-    if (!mainInfo) {
-        mainInfo = content;
-    }
+    editCourse.call({
+            info: replaceParagraphType(Session.get('basisInfo')),
+            mainInfo: replaceParagraphType(Session.get('mainInfo')),
+            name: Session.get('courseName') 
+        }, (error) => {
+            if (error) {
+                errorHnadler(error);
+            } else {
+                Session.set('info', { status: 'ok', content: '该课程 发布/更新 成功' });
+            }
+        })
 }
 
 export default withTracker((props) => {
+    let course = courses.find({ name: props.match.params.id }).fetch()[0];
+    course && Session.set('courseName', course.name);
+
     return {
         ...props,
         release,
-        onChange
+        course: course,
+        permissions: Session.get('permissions')
     }
 })(withEditor(Main));

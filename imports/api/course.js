@@ -21,6 +21,9 @@ const EvalSchema = new SimpleSchema({
 })
 // 课程
 const CourseSchema = new SimpleSchema({
+    name: {
+        type: String,
+    },
     teachers: {
         type: [String],
         defaultValue: [],
@@ -67,6 +70,12 @@ const CourseSchema = new SimpleSchema({
 })
 
 export const courses = new Mongo.Collection('courses');
+
+if (Meteor.isServer) {
+    Meteor.publish('courses', function () {
+        return courses.find();
+    });   
+}
 
 // 编辑课程基本信息
 export const editCourse = new ValidatedMethod({

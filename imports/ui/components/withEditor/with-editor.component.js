@@ -35,6 +35,9 @@ require('react-tap-event-plugin')();
 
 import './style.scss';
 
+// HTML 渲染插件
+import { HTMLRenderer } from 'ory-editor-renderer';
+
 const plugins = {
     content: [slate(), image, video, spacer, divider, html5video],
     layout: [parallax({ defaultPlugin: slate() })],
@@ -50,18 +53,18 @@ const editor = new Editor({
 })
 
 
-export default function withEditor(C) {
+export function withEditor(C) {
 
     return class Comp extends Component {
         render() {
             return (
                 <div>
-                    <C {...this.props} editor={(key) => {
-                        let content = createEmptyState();
+                    <C {...this.props} editor={(changeHandler, content = null) => {
+                        content || (content = createEmptyState());
 
                         editor.trigger.editable.add(content)
 
-                        return (<Editable editor={editor} id={content.id} onChange={this.props.onChange} />)
+                        return (<Editable editor={editor} id={content.id} onChange={changeHandler} />)
                     }} />
 
                     <Trash editor={editor} />
@@ -74,8 +77,17 @@ export default function withEditor(C) {
 
 }
 
-/**
- * props
- * onChange 回调函数监听用户编辑，回调参数 contents 用于获取编辑内容
- */
+export function htmlRender(params) {
+    return (
+        <HTMLRenderer state={params} plugins={plugins}/>
+    )
+}
+
+export function replaceParagraphType(content) {
+    const jsonString = JSON.stringify(content);
+    const search = '"type":"paragraph"';
+    const replacement = '"type":"PARAGRAPH/PARAGRAPH"';
+    const newContent = jsonString.replace(new RegExp(search, 'g'), replacement);
+    return JSON.parse(newContent);
+}
 

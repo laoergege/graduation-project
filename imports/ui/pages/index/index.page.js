@@ -34,12 +34,14 @@ export default class Index extends Component {
                 full="horizontal"
                 colorIndex='light-2'
                 separator="bottom"
-                wrap={false}>
+                wrap={false}
+                style={{"minHeight": '100vh'}}>
 
                 <Header login={this.login}/>
 
-                <Main />
-               
+                {/* <Main /> */}
+                {this.props.children || '系统出错了！'}
+
                 <Notification />
             </Box>
         )

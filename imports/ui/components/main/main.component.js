@@ -12,6 +12,12 @@ import Header from "../header";
 
 export default class Main extends Component {
 
+    saverFactory = (key) => {
+        return (content) => {
+            Session.set(key, content);
+        }
+    } 
+
     release = (e) => {
         e.preventDefault();
         this.props.release();
@@ -31,7 +37,7 @@ export default class Main extends Component {
                         flex={true} >
                         <Box size={{ width: 'xxlarge', height: 'medium' }} direction="row" responsive={true}
                             pad="small">
-                            {this.props.editor('CourseInfo') || 'Write it'}
+                            {this.props.editor(this.saverFactory('basisInfo'), (this.props.course ? this.props.course.info : null)) || 'Write it'}
                         </Box>
                     </Box>
 
@@ -54,14 +60,14 @@ export default class Main extends Component {
                                 </Anchor>
 
                                 {
-                                    Session.get('permissions').editCourse && (
+                                    this.props.permissions && this.props.permissions.editCourse && (
                                         <Anchor href='#' onClick={this.release}>
                                             发布/更新
                                         </Anchor>
                                     )
                                 }
                                 {
-                                    Session.get('permissions').editContent && (
+                                    this.props.permissions && this.props.permissions.editContent && (
                                         <Anchor href='#' icon={<Edit />}>
                                             编辑章节内容
                                         </Anchor>
@@ -82,7 +88,7 @@ export default class Main extends Component {
                         align='center'
                         pad='medium'
                         size={{ width: 'xxlarge' }}>
-                        {this.props.editor('CourseMainInfo') || 'Write it'}
+                        {this.props.editor(this.saverFactory('mainInfo'), (this.props.course ? this.props.course.mainInfo : null)) || 'Write it'}
                     </Box>
                     <Box
                         colorIndex="ok"

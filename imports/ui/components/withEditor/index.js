@@ -1,3 +1,3 @@
-import withEditor from "./with-editor.component";
+import { withEditor } from "./with-editor.component";
 
 export default withEditor;
