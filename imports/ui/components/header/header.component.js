@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { render as createLayer, unmountComponentAtNode } from "react-dom";
 
 import { Link } from "react-router-dom";
@@ -16,7 +16,7 @@ import Button from 'grommet/components/Button';
 import UserSettings from 'grommet/components/icons/base/UserSettings';
 import Logout from 'grommet/components/icons/base/Logout';
 
-export default class extends PureComponent {
+export default class extends Component {
 
     constructor(props) {
         super();
