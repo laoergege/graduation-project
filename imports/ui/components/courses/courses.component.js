@@ -11,28 +11,38 @@ export default class Courses extends PureComponent {
         this.props.history.push(url);
     }
 
+    onMore = () => {
+        this.props.onMore(this.props.courses.length);
+    }
+
     render() {
         return (
             <Box
-                colorIndex="light-1"
-                size={{ width: 'full', height: {min: 'large'} }}
+                colorIndex="light-2"
+                size={{ width: 'full'}}
                 direction="column"
                 responsive={true}
-                margin={{ top: "small" }}>
-                <Tiles fill={true}>
-                    {
-                        this.props.courses && this.props.courses.map((val, i) => {
-                            return (
-                                <Tile key={i} onClick={(e) => {
-                                    e.preventDefault();
-                                    this.detail(this.props.match.path + '/' + val.name)
-                                }}>
-                                    {htmlRender(val.info)}
-                                </Tile>
-                            )
-                        })
-                    }
-                </Tiles>
+                margin={{ top: "small" }} align="center">
+                <Box
+                    colorIndex="light-2"
+                    size={{ width: 'xxlarge'}}
+                    direction="column"
+                    responsive={true}>
+                    <Tiles fill={true} flush={false} style={{width: "auto"}} onMore={this.onMore}>
+                        {
+                            this.props.courses && this.props.courses.map((val, i) => {
+                                return (
+                                    <Tile colorIndex="light-1" pad="small" justify="center" key={i} onClick={(e) => {
+                                        e.preventDefault();
+                                        this.detail(this.props.match.path + '/' + val.name)
+                                    }}>
+                                        {htmlRender(val.info)}
+                                    </Tile>
+                                )
+                            })
+                        }
+                    </Tiles>
+                </Box>
             </Box>
         )
     }

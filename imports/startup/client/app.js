@@ -11,7 +11,7 @@ export default class App extends Component {
 
     componentWillMount() {
         Meteor.subscribe('Meteor.users.initials');
-        Meteor.subscribe('courses');
+        Meteor.subscribe('courses', {limit: 4, length: 0});
     }
 
     render() {

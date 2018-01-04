@@ -1,16 +1,18 @@
 import React, { Component } from "react";
 
 import { Editor } from 'slate-react'
-import { State } from 'slate'
+import { Value } from 'slate';
 
 
 
 export class SlateEditor extends Component {
 
     constructor(props) {
+        super();
+
         // 构建初始状态…
         this.state = {
-            initialState: State.fromJSON({
+            value: Value.fromJSON({
                 document: {
                     nodes: [
                         {
@@ -21,7 +23,7 @@ export class SlateEditor extends Component {
                                     kind: 'text',
                                     ranges: [
                                         {
-                                            text: this.props.initial_text
+                                            text: props.initialText
                                         }
                                     ]
                                 }
@@ -33,14 +35,14 @@ export class SlateEditor extends Component {
         }
     }
 
-    onChange = ({ state }) => {
-        this.setState({ state })
+    onChange = ({ value  }) => {
+        this.setState({ value  })
     }
 
     render() {
         return (
             <Editor
-                state={this.state.state}
+                value={this.state.value }
                 onChange={this.onChange}
             />
         )

@@ -69,3 +69,17 @@ $brand-color: #865cd6 !default;
         }
     }
 }
+
+/*
+*覆盖 grommet样式
+*/
+@media screen and (max-width: 44.9375em){
+    .grommetux-box--pad-small {
+        padding: 0!important
+    }
+}
+
+/*******/
+header{
+    overflow: auto;
+}

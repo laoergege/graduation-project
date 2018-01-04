@@ -72,8 +72,8 @@ const CourseSchema = new SimpleSchema({
 export const courses = new Mongo.Collection('courses');
 
 if (Meteor.isServer) {
-    Meteor.publish('courses', function () {
-        return courses.find();
+    Meteor.publish('courses', function ({limit, length}) {
+        return courses.find({}, {limit: (limit + length)});
     });   
 }
 

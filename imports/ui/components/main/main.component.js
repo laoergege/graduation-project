@@ -35,7 +35,7 @@ export default class Main extends Component {
                     <Box
                         size={{ width: 'full' }} justify="center" align="center"
                         flex={true} >
-                        <Box size={{ width: 'xxlarge', height: 'medium' }} direction="row" responsive={true}
+                        <Box size={{ width: 'xxlarge', height: 'medium' }} direction="row" responsive={true} justify="center"
                             pad="small">
                             {this.props.editor(this.saverFactory('basisInfo'), (this.props.course ? this.props.course.info : null)) || 'Write it'}
                         </Box>
