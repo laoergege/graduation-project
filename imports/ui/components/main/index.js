@@ -6,12 +6,20 @@ import { errorHnadler } from "../../../utils/util";
 import { replaceParagraphType } from "../../components/withEditor/with-editor.component";
 
 // 发布、更新课程
-function release() {
-    editCourse.call({
+function release(course) {
+
+    if (course) {
+        course.info = replaceParagraphType(Session.get('basisInfo'));
+        course.mainInfo = replaceParagraphType(Session.get('mainInfo'));
+    }else{
+        course = {
             info: replaceParagraphType(Session.get('basisInfo')),
             mainInfo: replaceParagraphType(Session.get('mainInfo')),
             name: Session.get('courseName') 
-        }, (error) => {
+        }
+    }
+
+    editCourse.call(course, (error) => {
             if (error) {
                 errorHnadler(error);
             } else {
@@ -21,13 +29,9 @@ function release() {
 }
 
 export default withTracker((props) => {
-    let course = courses.find({ name: props.match.params.id }).fetch()[0];
-    course && Session.set('courseName', course.name);
-
     return {
         ...props,
         release,
-        course: course,
         permissions: Session.get('permissions')
     }
 })(withEditor(Main));

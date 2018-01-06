@@ -20,7 +20,7 @@ export default class Main extends Component {
 
     release = (e) => {
         e.preventDefault();
-        this.props.release();
+        this.props.release(this.props.course);
     }
 
     render() {

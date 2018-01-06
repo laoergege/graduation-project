@@ -1,10 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
+import { WebApp } from "meteor/webapp";
 
 import "../imports/api/course";
 import "../imports/api/users";
 
 Meteor.startup(() => {
+   
     // 创建 root 账号
     if(!Meteor.users.findOne({username: 'root'})){
         Accounts.createUser({

@@ -1,5 +1,6 @@
 import { Mongo } from "meteor/mongo";
 import { auth } from "../utils/util";
+import { throws } from "assert";
 
 // 评价
 const EvalSchema = new SimpleSchema({
@@ -23,6 +24,11 @@ const EvalSchema = new SimpleSchema({
 const CourseSchema = new SimpleSchema({
     name: {
         type: String,
+        custom: function () {
+            if (courses.findOne({name: this.value}).count !== 1) {
+                throws (new Meteor.Error('validation-error').reason = "该课程已经存在！");
+            }
+        }
     },
     teachers: {
         type: [String],
