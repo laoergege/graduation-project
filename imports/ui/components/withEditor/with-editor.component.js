@@ -47,9 +47,12 @@ const plugins = {
 
 import defaultContent from "./contents";
 
+const content = createEmptyState();
+
 const editor = new Editor({
     plugins,
-    editables: [],
+    editables: [createEmptyState()],
+    defaultPlugin: slate()
 })
 
 

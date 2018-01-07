@@ -9,6 +9,7 @@ import Split from "grommet/components/Split";
 import Edit from "grommet/components/icons/base/Edit";
 
 import Header from "../header";
+import CourseItem from "../courseItem";
 
 export default class Main extends Component {
 
@@ -16,11 +17,17 @@ export default class Main extends Component {
         return (content) => {
             Session.set(key, content);
         }
-    } 
+    }
 
     release = (e) => {
         e.preventDefault();
         this.props.release(this.props.course);
+    }
+
+    itemChange = (img, title, intro) => {
+        if (this.props.course) {
+            this.props.course.info = { img, title, intro };
+        }
     }
 
     render() {
@@ -37,7 +44,7 @@ export default class Main extends Component {
                         flex={true} >
                         <Box size={{ width: 'xxlarge', height: 'medium' }} direction="row" responsive={true} justify="center"
                             pad="small">
-                            {this.props.editor(this.saverFactory('basisInfo'), (this.props.course ? this.props.course.info : null)) || 'Write it'}
+                            <CourseItem editAble={true} onChange={this.itemChange}  title={this.props.course.courseName} />
                         </Box>
                     </Box>
 
@@ -110,4 +117,5 @@ export default class Main extends Component {
  * props
  * 
  * release 回调函数，用于发布更新课程信息
+ * course 课程
  */

@@ -10,6 +10,7 @@ export default withTracker((props) => {
     return {
         ...props,
         courses: courses.find().fetch(),
-        onMore
+        onMore,
+        permissions: Session.get('permissions')
     }
 })(_Courses);

@@ -26,3 +26,5 @@ export function errorHnadler(error) {
     error.error === "validation-error" && Session.set('info', {status: 'warning', content: error.reason});
 }
 
+
+

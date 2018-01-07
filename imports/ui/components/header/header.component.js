@@ -58,7 +58,8 @@ export default class extends Component {
                         </Anchor>
                         <Anchor href="#">课程</Anchor>
                         <Anchor href="#">答疑</Anchor>
-                        <Anchor href="#">搜索</Anchor>
+                        <Anchor href="#">作业</Anchor>
+                        <Anchor href="#">资源</Anchor>                        
                     </Menu>
 
                     <Box>
