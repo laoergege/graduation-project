@@ -13,6 +13,11 @@ import CourseItem from "../courseItem";
 
 export default class Main extends Component {
 
+    constructor(props){
+        super();
+        this.course = Object.assign({}, props.course);
+    }
+
     saverFactory = (key) => {
         return (content) => {
             Session.set(key, content);
@@ -21,13 +26,18 @@ export default class Main extends Component {
 
     release = (e) => {
         e.preventDefault();
-        this.props.release(this.props.course);
+        this.props.release(this.course);
     }
 
     itemChange = (img, title, intro) => {
-        if (this.props.course) {
-            this.props.course.info = { img, title, intro };
+        if (this.course) {
+            this.course.info = { img, title, intro };
         }
+    }
+
+    detail = (e) => {
+        e.preventDefault();
+        this.props.history.push('/courses/' + this.props.match.params.name + '/content');
     }
 
     render() {
@@ -44,7 +54,10 @@ export default class Main extends Component {
                         flex={true} >
                         <Box size={{ width: 'xxlarge', height: 'medium' }} direction="row" responsive={true} justify="center"
                             pad="small">
-                            <CourseItem editAble={true} onChange={this.itemChange}  title={this.props.course.courseName} />
+                            <CourseItem editAble={this.props.permissions && this.props.permissions.editCourse } onChange={this.itemChange}  
+                                title={(this.course.info && this.course.info.title) || this.course.name} 
+                                intro={(this.course.info && this.course.info.intro) || ''}
+                                img={(this.course.info && this.course.info.img) || ''} />
                         </Box>
                     </Box>
 
@@ -75,7 +88,7 @@ export default class Main extends Component {
                                 }
                                 {
                                     this.props.permissions && this.props.permissions.editContent && (
-                                        <Anchor href='#' icon={<Edit />}>
+                                        <Anchor icon={<Edit />} onClick={this.detail}>
                                             编辑章节内容
                                         </Anchor>
                                     )
@@ -95,7 +108,7 @@ export default class Main extends Component {
                         align='center'
                         pad='medium'
                         size={{ width: 'xxlarge' }}>
-                        {this.props.editor(this.saverFactory('mainInfo'), (this.props.course ? this.props.course.mainInfo : null)) || 'Write it'}
+                        {this.props.editor(this.saverFactory('mainInfo'), (this.course ? this.course.mainInfo : null)) || 'Write it'}
                     </Box>
                     <Box
                         colorIndex="ok"

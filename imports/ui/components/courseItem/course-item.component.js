@@ -24,7 +24,7 @@ export class CourseItem extends PureComponent {
     }
 
     onChange = (e) => {
-        this.props.onChange && (this.props.onChange(this.state.imgSrc, this.title.innerText, this.intro.innerText));
+        this.props.onChange && (this.props.onChange(this.imgEle.value, this.titleEle.innerText, this.introEle.innerText));
     }
 
     render() {
@@ -44,15 +44,15 @@ export class CourseItem extends PureComponent {
                         this.props.editAble && (
                             <Box justify="center" full={true} align="center" justify="end"
                                 style={{ position: "absolute", backgroundColor: "rgba(0, 0, 1, 0.19)" }}>
-                                <TextInput placeHolder="请输入封面 url" onDOMChange={this.changeHandler}
-                                    style={{ margin: "0.5rem", color: "aliceblue" }} />
+                                <TextInput placeHolder="请输入封面 url" onDOMChange={this.changeHandler} value={this.state.imgSrc}
+                                    style={{ margin: "0.5rem", color: "aliceblue" }}  ref={(img) => { this.img = img }}/>
                             </Box>
                         )
                     }
                 </Box>
-                <Box flex={true} style={{ overflow: 'hidden' }}>
+                <Box flex={true} pad="small" style={{ overflow: 'hidden' }} >
                     <Section>
-                        <Heading tag="h2" ref={(title) => { this.title = title; }}>
+                        <Heading tag="h3" ref={(title) => { this.title = title; }}>
                             {this.props.title || 'Write it'}
                         </Heading>
                         <Paragraph ref={(intro) => { this.intro = intro; }}>
@@ -66,13 +66,16 @@ export class CourseItem extends PureComponent {
 
     componentDidMount() {
         if (this.props.editAble) {
-            this.title = findDOMNode(this.title);
-            this.intro = findDOMNode(this.intro);
-            this.title.contentEditable = true;
-            this.intro.contentEditable = true;
+            this.titleEle = findDOMNode(this.title);
+            this.introEle = findDOMNode(this.intro);
+            this.imgEle = findDOMNode(this.img);            
+            this.titleEle.contentEditable = true;
+            this.introEle.contentEditable = true;
 
-            this.title.oninput = this.onChange;
-            this.intro.oninput = this.onChange;
+            this.titleEle.oninput = this.onChange;
+            this.introEle.oninput = this.onChange;
+            this.imgEle.oninput = this.onChange;
+            
         }
     }
 }

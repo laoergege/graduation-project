@@ -5,10 +5,12 @@ import { editCourse, courses } from "../../../api/course";
 import { errorHnadler } from "../../../utils/util";
 import { replaceParagraphType } from "../../components/withEditor/with-editor.component";
 
+import { CourseSchema } from "../../../api/course";
+
 // 发布、更新课程
 function release(course) {
     if (course) {
-        // course.mainInfo = replaceParagraphType(Session.get('mainInfo'));
+        CourseSchema.clean(course);
 
         editCourse.call(course, (error) => {
             if (error) {

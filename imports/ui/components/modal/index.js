@@ -16,3 +16,4 @@ export default function(layer, compoent) {
         unmountComponentAtNode(document.getElementById(layer));
     } 
 }
+

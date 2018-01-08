@@ -1,9 +1,8 @@
 import { Mongo } from "meteor/mongo";
 import { auth } from "../utils/util";
-import { throws } from "assert";
 
 // 评价
-const EvalSchema = new SimpleSchema({
+export const EvalSchema = new SimpleSchema({
     userid: {
         type: String
     },
@@ -21,18 +20,23 @@ const EvalSchema = new SimpleSchema({
     }
 })
 // 课程
-const CourseSchema = new SimpleSchema({
+export const CourseSchema = new SimpleSchema({
+    _id:{
+        type: String,
+        optional: true
+    },
     name: {
         type: String,
-        custom: function () {
-            if (courses.findOne({name: this.value}).count !== 1) {
-                throws (new Meteor.Error('validation-error').reason = "该课程已经存在！");
+        custom: function () { 
+            if (!this.field('_id') && courses.findOne({name: this.value})) {
+                let error = new Meteor.Error('validation-error');
+                error.reason = "该课程已经存在！"
+                throw (error);
             }
         }
     },
     teachers: {
         type: [String],
-        defaultValue: [],
         optional: true
     },
     evaluate: {
@@ -64,11 +68,11 @@ const CourseSchema = new SimpleSchema({
         defaultValue: -1,
         optional: true
     },
-    sections: {
-        type: [String],
-        defaultValue: [],
-        optional: true
-    },
+    // sections: {
+    //     type: [String],
+    //     defaultValue: [],
+    //     optional: true
+    // },
     createBy: {
         type: String,
         optional: true
@@ -91,15 +95,15 @@ export const editCourse = new ValidatedMethod({
         //验证用户权限
         auth(this.name);
 
-        if (!course.createAt) {
-            course.createAt = new Date();
-        }
+        // if (!course.createAt) {
+        //     course.createAt = new Date();
+        // }
         course.createBy || (course.createBy = Meteor.userId());
 
         course.teachers || (course.teachers = [Meteor.userId()]);
 
-        course.status || (course.status = -1);
+        // course.status || (course.status = -1);
 
-        courses.upsert({_id: course.id}, {$set: course})
+        courses.upsert({_id: course._id}, {$set: course})
     }
 })
