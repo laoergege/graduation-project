@@ -3,7 +3,6 @@ import Main from "./main.component";
 import { withTracker } from 'meteor/react-meteor-data';
 import { editCourse, courses } from "../../../api/course";
 import { errorHnadler } from "../../../utils/util";
-import { replaceParagraphType } from "../../components/withEditor/with-editor.component";
 
 import { CourseSchema } from "../../../api/course";
 
