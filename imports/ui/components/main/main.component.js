@@ -108,7 +108,7 @@ export default class Main extends Component {
                         align='center'
                         pad='medium'
                         size={{ width: 'xxlarge' }}>
-                        {this.props.editor(this.saverFactory('mainInfo'), (this.course ? this.course.mainInfo : null)) || 'Write it'}
+                        
                     </Box>
                     <Box
                         colorIndex="ok"

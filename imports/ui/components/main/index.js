@@ -1,5 +1,5 @@
 import Main from "./main.component";
-import withEditor from "../withEditor";
+
 import { withTracker } from 'meteor/react-meteor-data';
 import { editCourse, courses } from "../../../api/course";
 import { errorHnadler } from "../../../utils/util";
@@ -28,4 +28,4 @@ export default withTracker((props) => {
         release,
         permissions: Session.get('permissions')
     }
-})(withEditor(Main));
+})(Main);
