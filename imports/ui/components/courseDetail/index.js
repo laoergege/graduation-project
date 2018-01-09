@@ -7,6 +7,6 @@ export default withTracker((props) => {
     return {
         ...props,
         sections: sections.find({courseid: props.course._id}).fetch(),
-        editCourse: Session.get('permissions').editCourse
+        editCourse: Session.get('permissions').editCourse || false
     }
 })(withAnimate(CourseDetail));

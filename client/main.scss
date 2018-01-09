@@ -79,6 +79,25 @@ $brand-color: #865cd6 !default;
     }
 }
 
+/*
+*覆盖 quill 样式
+*/
+.ql-toolbar.ql-snow{
+    border-left: none!important;
+    border-right: none!important;
+    border-bottom: none!important;
+    border-top:  1px solid #ccc!important;
+}
+
+
+.ql-container.ql-snow{
+    border-left: none!important;
+    border-right: none!important;
+    border-bottom: none!important;
+    border-top:  1px solid #ccc!important;
+}
+
+
 /*******/
 header{
     overflow: auto;
