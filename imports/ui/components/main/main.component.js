@@ -87,7 +87,7 @@ export default class Main extends Component {
                                     )
                                 }
                                 {
-                                    this.props.permissions && this.props.permissions.editContent && (
+                                    this.props.permissions && this.props.permissions.editCourse && (
                                         <Anchor icon={<Edit />} onClick={this.detail}>
                                             编辑章节内容
                                         </Anchor>

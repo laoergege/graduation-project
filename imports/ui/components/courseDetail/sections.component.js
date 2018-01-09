@@ -26,6 +26,15 @@ export default class Sections extends PureComponent {
         this.listEle = [];
     }
 
+    componentDidMount(){
+        this.listEle.map((ele, i) =>{
+            if (ele && this.props.editAble) {
+                ele.contentEditable = true;
+                ele.onkeypress = this.alterName(i);
+            }
+        })
+    }
+
     componentDidUpdate(){
         this.listEle.map((ele, i) =>{
             if (ele && this.props.editAble) {

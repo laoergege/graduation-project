@@ -47,31 +47,6 @@ Meteor.startup(() => {
                     "name": "课程-编辑",
                     "method": "editCourse",
                     "allow": true
-                },
-    
-    
-                {
-                    "name": "课程-内容-获取",
-                    "method": "getContent",
-                    "allow": true,
-                    "url": [
-                        "/courses/:id/content"
-                    ]
-                },
-                {
-                    "name": "课程-内容-删除",
-                    "method": "removeContent",
-                    "allow": true
-                },
-                {
-                    "name": "课程-内容-编辑",
-                    "method": "editContent",
-                    "allow": true
-                },
-                {
-                    "name": "课程-内容-发布",
-                    "method": "publishContent",
-                    "allow": true
                 }
             ]
         }

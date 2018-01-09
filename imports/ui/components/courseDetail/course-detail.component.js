@@ -58,23 +58,27 @@ export default class CourseDetail extends PureComponent {
                         <Sections data={this.props.sections} onClick={this.addSection}
                             editAble={this.props.editCourse} onChange={this.changeSN} />
                     </Box>
-                    <Box colorIndex='light-2' size="xlarge" align='stretch' >
+                    <Box colorIndex='light-2' size={{ width: "xlarge" }} align='stretch' style={{ height: "100%" }}>
                         <Box direction="row" justify="between" align="baseline" >
                             <Label margin="none" truncate={true}>
                                 {'前言 / 课程简介'}
                             </Label>
-                            <Menu responsive={false}
-                                direction='row'>
-                                <Anchor href='#'>
-                                    删除
-                                </Anchor>
-                                <Anchor href='#'>
-                                    本地暂存
-                                </Anchor>
-                                <Anchor href='#'>
-                                    发布/更新
-                                </Anchor>
-                            </Menu>
+                            {
+                                this.props.editCourse && (
+                                    <Menu responsive={false}
+                                        direction='row'>
+                                        <Anchor href='#'>
+                                            删除
+                                    </Anchor>
+                                        <Anchor href='#'>
+                                            本地暂存
+                                    </Anchor>
+                                        <Anchor href='#'>
+                                            发布/更新
+                                    </Anchor>
+                                    </Menu>
+                                )
+                            }
                         </Box>
                         <Content editAble={this.props.editCourse} />
                     </Box>

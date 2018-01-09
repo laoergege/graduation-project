@@ -89,12 +89,28 @@ $brand-color: #865cd6 !default;
     border-top:  1px solid #ccc!important;
 }
 
+.hide-toolbar.ql-toolbar.ql-snow{
+    visibility: hidden;
+}
 
 .ql-container.ql-snow{
     border-left: none!important;
     border-right: none!important;
     border-bottom: none!important;
     border-top:  1px solid #ccc!important;
+}
+
+.ql-flex{
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    .ql-container.ql-snow{
+        flex: 1;
+        overflow: auto;
+    }
+    
 }
 
 
@@ -115,3 +131,4 @@ header{
     top: 0;
     z-index: 2;
 }
+
