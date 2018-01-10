@@ -22,8 +22,17 @@ export function auth(auth_name) {
  */
 export function errorHnadler(error) {
     console.log(error);
-    error.error === "unauthorized-error" && Session.set('info', {status: 'critical', content: error.reason});
-    error.error === "validation-error" && Session.set('info', {status: 'warning', content: error.reason});
+
+    switch (error.error) {
+        case "unauthorized-error":
+            Session.set('info', {status: 'critical', content: error.reason});
+            break;
+        case "validation-error":
+            Session.set('info', {status: 'warning', content: error.reason});
+        default:
+            Session.set('info', {status: 'critical', content: error.reason});
+            break;
+    }
 }
 
 

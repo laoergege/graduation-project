@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { findDOMNode } from "react-dom";
 
 import Box from 'grommet/components/Box';
@@ -15,7 +15,7 @@ import Label from 'grommet/components/Label';
 import singleInput from "../modal/singleInput";
 
 
-export default class Sections extends PureComponent {
+export default class Sections extends Component {
 
     constructor(props){
         super();
@@ -45,16 +45,18 @@ export default class Sections extends PureComponent {
     }
    
     // 添加章节
-    AddSection = (e) => {
-        e.preventDefault();
+    AddSection = (type, order) => {
+        return (e) => {
+            e.preventDefault();
 
-        singleInput('新章节', (name) => {
-            if (!name || !(name.trim())) {
-                Session.set('info', { status: 'warning', content: "章节名称不能为空" })
-            } else {
-                this.props.onClick(name);
-            }
-        })
+            singleInput('新章节', (name) => {
+                if (!name || !(name.trim())) {
+                    Session.set('info', { status: 'warning', content: "章节名称不能为空" })
+                } else {
+                    this.props.onClick(name, type, order);
+                }
+            })
+        }
     }
 
     // 修改章节名称
@@ -75,7 +77,7 @@ export default class Sections extends PureComponent {
                     this.props.editAble && (
                         <Anchor icon={<Add />}
                             label='章节'
-                            onClick={this.AddSection}
+                            onClick={this.AddSection(0)}
                             primary={true}
                             margin={{ bottom: "small" }}
                             style={{ display: "flex", justifyContent: "center" }} />
@@ -92,22 +94,18 @@ export default class Sections extends PureComponent {
                                         }}>{val.name}</Label>}>
                                     {
                                         this.props.editAble && (
-                                            <Anchor icon={<Add />}
-                                                label='小节'
-                                                onClick={this.AddSection}
-                                                primary={true}
-                                                style={{ display: "flex", justifyContent: "center" }} />
+                                            <Anchor label='（添加小节）' onClick={this.AddSection(1, val._id)} align="center" />
                                         )
                                     }
                                     {
-                                        val.contents.map((val, i) => {
+                                        val.contents.map((value, k) => {
                                             return (
-                                                <List key={i}>
-                                                    <ListItem justify='center'
-                                                        separator='horizontal'>
-                                                        <p>{val.name}</p>
-                                                    </ListItem>
-                                                </List>
+                                                <Anchor key={k} align="center"
+                                                    label={value.name} onClick={() => {
+                                                    Session.set('postion', `${val.name} / ${value.name}`);
+                                                    Session.set('Section', i);
+                                                    Session.set('section', k);                                                    
+                                                }} />
                                             )
                                         })
                                     }
@@ -126,9 +124,11 @@ export default class Sections extends PureComponent {
  * 
  * data: [{name, order, contents: [{name, content: object]}] 章节列表数据
  * 
- * onClick: function(name: String 新章节名称) 新建章节
+ * onClick: function(name: String 新章节名称, type: [0 章节, 1 小章节], [id] sectionid，当type为1时，会传入) 新建章节
  * 
  * editAble: 控制是否显示 按钮
  * 
  * onChange: function(name, i 章节列表序号) 修改章节名称
+ * 
+ * onChoise: function(order 章节序号, i 第几小章节)
  */
