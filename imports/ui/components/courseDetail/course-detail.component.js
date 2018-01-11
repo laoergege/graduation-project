@@ -8,7 +8,7 @@ import Label from 'grommet/components/Label';
 import Menu from 'grommet/components/Menu';
 import Anchor from 'grommet/components/Anchor';
 
-import { addSection, alterSection, editSection, ContentSchema } from "../../../api/sections";
+import { addSection, alterSection, editSection, ContentSchema, delSection, delContent as _delContent } from "../../../api/sections";
 import { errorHnadler } from "../../../utils/util";
 
 export default class CourseDetail extends PureComponent {
@@ -19,7 +19,7 @@ export default class CourseDetail extends PureComponent {
         Meteor.subscribe('sections', this.props.course._id);
     }
 
-    addSection = (name, type, sectionid) => {
+    addSection = (name, type, section) => {
         if (type === 0) {
             let newSection = {
                 name: name,
@@ -35,9 +35,9 @@ export default class CourseDetail extends PureComponent {
                 }
             })
         } else {
-            let content = { name, order: this.props.sections.filter(val => val._id === sectionid)[0].contents.length + 1 };
+            let content = { name, order: section.contents.length === 0 ? 0 : (section.contents[section.contents.length - 1].order + 1)  };
             ContentSchema.clean(content);
-            editSection.call({ sectionid, content }, (error) => {
+            editSection.call({ sectionid: section._id, content }, (error) => {
                 if (error) {
                     errorHnadler(error);
                 } else {
@@ -51,13 +51,21 @@ export default class CourseDetail extends PureComponent {
     changeSN = (name, i) => {
         let section = this.props.sections[i];
 
-        alterSection.call({ _id: section._id, name }, (error) => {
-            if (error) {
-                errorHnadler(error);
-            } else {
-                Session.set('info', { status: 'ok', content: '更新章节成功！' });
-            }
-        })
+        if (name) {
+            alterSection.call({ id: section._id, name }, (error) => {
+                if (error) {
+                    errorHnadler(error);
+                } else {
+                    Session.set('info', { status: 'ok', content: '更新章节成功！' });
+                }
+            })
+        } else {
+            delSection.call(section._id, (error) => {
+                if (error) {
+                    errorHnadler(error);
+                }
+            })
+        }
     }
 
     // 发布更新章节
@@ -68,6 +76,18 @@ export default class CourseDetail extends PureComponent {
                 errorHnadler(error);
             } else {
                 Session.set('info', { status: 'ok', content: '发布/更新成功！' });
+            }
+        })
+    }
+
+    // 删除文章
+    delContent = () => {
+        _delContent.call({ sectionid: this.props.sections[this.props.Order]._id, order: this.props.sections[this.props.Order].contents[this.props.order].order }, (error) => {
+            if (error) {
+                errorHnadler(error);
+            } else {
+                Session.set('postion', '');
+                Session.set('info', { status: 'ok', content: '删除该文章成功！' });
             }
         })
     }
@@ -95,7 +115,7 @@ export default class CourseDetail extends PureComponent {
                                         this.props.editCourse && (
                                             <Menu responsive={false}
                                                 direction='row'>
-                                                <Anchor href='#'>
+                                                <Anchor href='#' onClick={this.delContent}>
                                                     删除
                                                 </Anchor>
                                                 <Anchor href='#'>
@@ -112,10 +132,10 @@ export default class CourseDetail extends PureComponent {
                         }
                         {
                             this.props.postion && (
-                                <Content editAble={this.props.editCourse} data={this.props.sections[this.props.Order] && 
+                                <Content editAble={this.props.editCourse} data={this.props.sections[this.props.Order] &&
                                     this.props.sections[this.props.Order].contents[this.props.order]} onChange={(content) => {
-                                    this.currContent = content;
-                                }} />
+                                        this.currContent = content;
+                                    }} />
                             )
                         }
                     </Box>

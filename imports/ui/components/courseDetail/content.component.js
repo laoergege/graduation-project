@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { findDOMNode } from "react-dom";
 
 import 'react-quill/dist/quill.snow.css';
@@ -8,7 +8,7 @@ import classNames from "classnames";
 import Box from 'grommet/components/Box';
 import Heading from 'grommet/components/Heading';
 
-export default class Content extends PureComponent {
+export default class Content extends Component {
 
     // 定义 quill 工具栏
     modules = {
@@ -35,6 +35,13 @@ export default class Content extends PureComponent {
             ele.contentEditable = this.props.editAble;
             ele.oninput = this.titleChange
         }
+    }
+
+    shouldComponentUpdate(nextProps){
+        if (!nextProps.data) {
+           return false;
+        }
+        return true;
     }
 
     handleChange = (content, delta, source, editor) => {

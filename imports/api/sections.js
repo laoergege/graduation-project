@@ -61,8 +61,9 @@ export const addSection = new ValidatedMethod({
 // 修改章节名称
 export const alterSection = new ValidatedMethod({
     name: 'alterSection',
-    validate(args) {
-        check(args, String);
+    validate({ id, name }) {
+        check(id, String);
+        check(name, String);        
     },
     run({ id, name }) {
         //验证用户权限
@@ -89,4 +90,33 @@ export const editSection = new ValidatedMethod({
             sections.update({ _id: sectionid }, { $addToSet: { contents: content } });
         }
     }
-})  
+})
+
+// 删除 section
+export const delSection = new ValidatedMethod({
+    name: 'delSection',
+    validate(sectionid) {
+        check(sectionid, String);
+    },
+    run(sectionid) {
+        //验证用户权限
+        auth('editCourse');
+
+        sections.remove({ _id: sectionid });
+    }
+})
+
+// 删除 content
+export const delContent = new ValidatedMethod({
+    name: 'delContent',
+    validate({ sectionid, order }) {
+        check(sectionid, String);
+        check(order, Number);
+    },
+    run({ sectionid, order }) {
+        //验证用户权限
+        auth('editCourse');
+
+        sections.update({ _id: sectionid}, { $pull: { contents: {order: order} } });
+    }
+})

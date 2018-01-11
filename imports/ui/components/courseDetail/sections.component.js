@@ -22,19 +22,6 @@ export default class Sections extends Component {
         this.listEle = [];
     }
 
-    componentWillUpdate(){
-        this.listEle = [];
-    }
-
-    componentDidMount(){
-        this.listEle.map((ele, i) =>{
-            if (ele && this.props.editAble) {
-                ele.contentEditable = true;
-                ele.onkeypress = this.alterName(i);
-            }
-        })
-    }
-
     componentDidUpdate(){
         this.listEle.map((ele, i) =>{
             if (ele && this.props.editAble) {
@@ -45,7 +32,7 @@ export default class Sections extends Component {
     }
    
     // 添加章节
-    AddSection = (type, order) => {
+    AddSection = (type, section) => {
         return (e) => {
             e.preventDefault();
 
@@ -53,7 +40,7 @@ export default class Sections extends Component {
                 if (!name || !(name.trim())) {
                     Session.set('info', { status: 'warning', content: "章节名称不能为空" })
                 } else {
-                    this.props.onClick(name, type, order);
+                    this.props.onClick(name, type, section);
                 }
             })
         }
@@ -90,11 +77,15 @@ export default class Sections extends Component {
                                 <AccordionPanel key={i} pad="none" heading={
                                     <Label margin="none" truncate={true} style={{ padding: "12px" }}
                                         ref={(comp) => {
-                                            this.listEle.push(findDOMNode(comp));
+                                            let ele = findDOMNode(comp)
+                                            if (ele && this.props.editAble) {
+                                                ele.contentEditable = true;
+                                                ele.onkeypress = this.alterName(i);
+                                            }
                                         }}>{val.name}</Label>}>
                                     {
                                         this.props.editAble && (
-                                            <Anchor label='（添加小节）' onClick={this.AddSection(1, val._id)} align="center" />
+                                            <Anchor label='（添加小节）' onClick={this.AddSection(1, val)} align="center" />
                                         )
                                     }
                                     {
@@ -124,7 +115,7 @@ export default class Sections extends Component {
  * 
  * data: [{name, order, contents: [{name, content: object]}] 章节列表数据
  * 
- * onClick: function(name: String 新章节名称, type: [0 章节, 1 小章节], [id] sectionid，当type为1时，会传入) 新建章节
+ * onClick: function(name: String 新章节名称, type: [0 章节, 1 小章节], [section] 当type为1时，会传入) 新建章节
  * 
  * editAble: 控制是否显示 按钮
  * 
