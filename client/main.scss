@@ -115,6 +115,33 @@ $brand-color: #865cd6 !default;
     
 }
 
+.chat-left {
+    .search > input{
+        border:none;
+    }
+
+    .user-list{
+        .time,.content{
+            color:#a8a8a8;
+        }
+
+        .time{
+            align-self: center;
+            margin-left: auto;
+        }
+    }
+}
+
+.chat-right{
+    .msg-window{
+        .msg{
+            .ctext{
+                border-radius:10px;
+            }
+        }
+    }
+}
+
 
 /*******/
 header{

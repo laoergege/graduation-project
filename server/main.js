@@ -51,4 +51,32 @@ Meteor.startup(() => {
             ]
         }
     })
+
+    // 教师
+    if(!Meteor.users.findOne({username: 'teacher'})){
+        Accounts.createUser({
+            username: 'teacher',
+            password: 'teacher',
+            profile: {
+                name: 'lys',
+                avater: '',
+                intro: '',
+                role: 2
+            }
+        })
+    }
+
+    // 学生
+    if(!Meteor.users.findOne({username: 'student'})){
+        Accounts.createUser({
+            username: 'student',
+            password: 'student',
+            profile: {
+                name: '圣所',
+                avater: '',
+                intro: '',
+                role: 3
+            }
+        })
+    }
 })

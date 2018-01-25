@@ -118,9 +118,6 @@ export default class CourseDetail extends PureComponent {
                                                 <Anchor href='#' onClick={this.delContent}>
                                                     删除
                                                 </Anchor>
-                                                <Anchor href='#'>
-                                                    本地暂存
-                                                </Anchor>
                                                 <Anchor href='#' onClick={this.publish}>
                                                     发布/更新
                                                 </Anchor>

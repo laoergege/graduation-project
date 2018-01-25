@@ -42,6 +42,12 @@ export default class extends Component {
         Session.keys = {};
     }
 
+    goTo = (route) => {
+        return () => {
+            this.props.history.push(route);
+        }
+    }
+
     render() {
         return (
             <Header justify="center" colorIndex="light-1" separator="bottom">
@@ -56,8 +62,12 @@ export default class extends Component {
                         <Anchor tag="div">
                             <Link to="/NotFound">首页</Link>
                         </Anchor>
-                        <Anchor href="#">课程</Anchor>
-                        <Anchor href="#">答疑</Anchor>
+                        <Anchor href="#" onClick={this.goTo('/courses')}>课程</Anchor>
+                        {
+                            this.props.permissions && this.props.permissions.getChat && (
+                                <Anchor href="#" onClick={this.goTo('/chat')}>答疑</Anchor>
+                            )
+                        }
                         <Anchor href="#">作业</Anchor>
                         <Anchor href="#">资源</Anchor>                        
                     </Menu>

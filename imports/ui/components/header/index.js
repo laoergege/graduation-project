@@ -1,5 +1,6 @@
 import Header from "./header.component";
 import { withTracker } from 'meteor/react-meteor-data';
+import { withRouter } from 'react-router'
 
 export default withTracker((props) => {
     if (!Session.get('permissions') && Meteor.user() && Meteor.user().permissions) {
@@ -10,6 +11,7 @@ export default withTracker((props) => {
    
     return {
         ...props,
-        user: Meteor.user()
+        user: Meteor.user(),
+        permissions: Session.get('permissions')
     }
-})(Header)
+})(withRouter(Header))
