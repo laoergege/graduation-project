@@ -121,6 +121,9 @@ $brand-color: #865cd6 !default;
     }
 
     .user-list{
+        height: 100%;
+        cursor: pointer;
+        
         .time,.content{
             color:#a8a8a8;
         }

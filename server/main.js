@@ -5,6 +5,7 @@ import { WebApp } from "meteor/webapp";
 import "../imports/api/course";
 import "../imports/api/users";
 import "../imports/api/sections";
+import "../imports/api/chat";
 
 Meteor.startup(() => {
    

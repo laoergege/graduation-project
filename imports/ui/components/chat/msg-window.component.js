@@ -7,7 +7,7 @@ import Image from 'grommet/components/Image';
 export default class extends PureComponent {
     render() {
         return (
-            <Box flex={true} separator="top" className="msg-window">
+            <Box flex={true} className="msg-window">
                 <Columns size='medium'>
                     <Box pad='small' margin='small' direction="row" className="msg">
                         <Image src='/img/chat.png' size='thumb' style={{objectFit: 'contain'}}/>
