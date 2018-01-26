@@ -9,20 +9,22 @@ import Anchor from 'grommet/components/Anchor';
 import Headline from 'grommet/components/Headline';
 import Send from 'grommet/components/icons/base/Send';
 import DocumentUpdate from 'grommet/components/icons/base/DocumentUpdate';
+import Image from 'grommet/components/Image';
+import Title from 'grommet/components/Title';
 
 import UserList from "./user-list.component";
 import MsgWindow from "./msg-window.component";
 import withAnimate from "../animate";
 
+import { errorHnadler } from "../../../utils/util";
+
 import { getChat, msgs, sendMsg } from "../../../api/chat";
 
 class Chat extends PureComponent {
 
-    constructor(props){
-        super();
-        this.state = {
-            target: null
-        }
+    state = {
+        target: null,
+        value: ''
     }
 
     componentWillMount() {
@@ -39,13 +41,21 @@ class Chat extends PureComponent {
     send = () => {
         let msg = {
             _type: 'text',
-            content: {text: this.input.value},
+            content: { text: this.state.value },
             from: Meteor.user()._id,
             to: this.state.target && this.state.target._id,
             createAt: new Date()
         }
 
-        sendMsg.call(msg);
+        sendMsg.call(msg, (error) => {
+            if (error) {
+                errorHnadler(error);
+            } else {
+                this.setState({
+                    value: ''
+                })
+            }
+        });
     }
 
     onEnter = (event) => {
@@ -60,25 +70,35 @@ class Chat extends PureComponent {
         })
     }
 
+    onInput = (e) => {
+        this.setState({
+            value: e.target.value
+        })
+    }
+
     render() {
         return (
             <Box
-                size={{ width: 'full' }} margin={{top: 'small'}} align="center" direction="column">
+                size={{ width: 'full' }} margin={{ top: 'small' }} align="center" direction="column">
                 <Split flex='right'>
                     <Box colorIndex='light-1' size={{ width: "medium", height: 'large' }} pad="small" className="chat-left">
                         <SearchInput placeHolder='Search' className="search" />
-                        <UserList users={this.props.users} onSelect={this.onSelect}/>
+                        <UserList users={this.props.users} onSelect={this.onSelect} msgs={this.props.msgs} />
                     </Box>
                     <Box colorIndex='light-1' pad="small" size={{ width: "large", height: 'large' }} separator="left"
                         justify="end" className="chat-right">
-                        <Headline size='small' style={{marginBottom:"12px"}}>
-                            {(this.state.target && this.state.target.profile.name) || ''}
-                        </Headline>
-                        <MsgWindow />
-                        <Box direction="row" separator="top" style={{paddingTop:"12px"}} onKeyUp={this.onEnter}>
-                            <TextInput placeHolder="Type something to send" style={{flex: '1'}} ref={(input) => { this.input = input }}/>
-                            <Anchor icon={<DocumentUpdate  colorIndex="brand"/>} style={{height: '24px'}} />
-                            <Anchor icon={<Send  colorIndex="brand"/>} style={{height: '24px'}} onClick={this.send}/>
+                        <Box align='center' direction="row"  separator="bottom" style={{height: '30px'}}
+                            pad='small'>
+                            {this.state.target && ( <Image src='/img/chat.png' size='thumb' style={{ objectFit: 'contain' }} />) }
+                            <Box margin={{ left: 'small' }} >
+                                <Title> {(this.state.target && this.state.target.profile.name) || ''}</Title>
+                            </Box>
+                        </Box>
+                        <MsgWindow msgs={this.state.target ? msgs.find({to: this.state.target._id}).fetch() : []}/>
+                        <Box direction="row" separator="top" style={{ paddingTop: "12px" }} onKeyUp={this.onEnter}>
+                            <TextInput placeHolder="Type something to send" style={{ flex: '1' }} onDOMChange={this.onInput} value={this.state.value} />
+                            <Anchor icon={<DocumentUpdate colorIndex="brand" />} style={{ height: '24px' }} />
+                            <Anchor icon={<Send colorIndex="brand" />} style={{ height: '24px' }} onClick={this.send} />
                         </Box>
                     </Box>
                 </Split>
@@ -88,8 +108,8 @@ class Chat extends PureComponent {
 }
 
 export default withTracker((props) => {
-    return{
-        users: Meteor.users.find({'profile.roles': {$all: [2]}}).fetch(),
-        msgs: msgs.find({}, {sort: {createAt: -1}}).fetch()
+    return {
+        users: Meteor.users.find({ 'profile.roles': { $all: [2] } }).fetch(),
+        msgs: msgs.find({}, { sort: { createAt: -1 } }).fetch()
     }
 })(withAnimate(Chat));

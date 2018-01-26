@@ -28,9 +28,9 @@ export default class extends PureComponent {
         return () => {
             if (this.props.onSelect) {
                 if (this.state.showMsg) {
-                    this.props.onSelect(target)
+                    this.props.onSelect(target.to)
                 }else{
-                    this.props.onSelect(target.from)
+                    this.props.onSelect(target)
                 }
             }
         }
@@ -46,21 +46,23 @@ export default class extends PureComponent {
                             (
                                 this.props.msgs && (
                                     this.props.msgs.map((val, key) => {
-                                        <Box align='start' direction="row" key={key} onClick={this._onSelect(val)}
-                                            pad='small'
-                                            margin='small'
-                                            colorIndex='light-2'>
-                                            <Image src='/img/chat.png' size='thumb' style={{ objectFit: 'contain' }} />
-                                            <Box margin={{ left: 'small' }} >
-                                                <Heading tag='h4' strong={true} truncate={true}>
-                                                    Sample Heading
-                                            </Heading>
-                                                <span className="content">
-                                                    [暂无新消息]
-                                                </span>
+                                        return (
+                                            <Box align='start' direction="row" key={key} onClick={this._onSelect(val)} className="item"
+                                                pad='small'
+                                                margin='small'
+                                                colorIndex='light-2'>
+                                                <Image src='/img/chat.png' size='thumb' style={{ objectFit: 'contain' }} />
+                                                <Box margin={{ left: 'small' }} >
+                                                    <Heading tag='h4' strong={true} truncate={true}>
+                                                        Sample Heading
+                                                </Heading>
+                                                    <span className="content">
+                                                        { val.content[val._type] || '[暂无新消息]'}
+                                                    </span>
+                                                </Box>
+                                                <Timestamp value='2018-01-24T14:32:41.596Z' fields='time' className="time" />
                                             </Box>
-                                            <Timestamp value='2018-01-24T14:32:41.596Z' fields='time' className="time" />
-                                        </Box>
+                                        )
                                     })
                                 )
 
@@ -69,7 +71,7 @@ export default class extends PureComponent {
                                 this.props.users ? (
                                     this.props.users.map((val ,key) => {
                                         return(
-                                            <Box align='center' direction="row" key={key} onClick={this._onSelect(val)}
+                                            <Box align='center' direction="row" key={key} onClick={this._onSelect(val)} className="item"
                                                 pad='small'
                                                 margin='small'
                                                 colorIndex='light-2'>

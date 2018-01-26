@@ -38,7 +38,7 @@ if (Meteor.isServer) {
         })
         this.ready();
         // 监听在线信息
-        msgs.find({to: this.userId}, {sort: {createAt: -1}}).observeChanges({
+        msgs.find({$or: [{from: this.userId}, {to: this.userId}]}, {sort: {createAt: -1}}).observeChanges({
             added(id, fields){
 
                 doc.from = Meteor.users.find({_id: doc.from});
@@ -75,6 +75,6 @@ export const sendMsg = new ValidatedMethod({
     run(msg) {
         auth('getChat');
 
-        msg.insert(msg);
+        msgs.insert(msg);
     }
 })

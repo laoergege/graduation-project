@@ -122,15 +122,18 @@ $brand-color: #865cd6 !default;
 
     .user-list{
         height: 100%;
-        cursor: pointer;
         
-        .time,.content{
-            color:#a8a8a8;
-        }
+        .item{
+            cursor: pointer;
 
-        .time{
-            align-self: center;
-            margin-left: auto;
+            .time,.content{
+                color:#a8a8a8;
+            }
+    
+            .time{
+                align-self: center;
+                margin-left: auto;
+            }
         }
     }
 }
