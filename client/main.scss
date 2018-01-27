@@ -125,6 +125,7 @@ $brand-color: #865cd6 !default;
         
         .item{
             cursor: pointer;
+            margin-bottom: 3px;
 
             .time,.content{
                 color:#a8a8a8;
@@ -140,6 +141,9 @@ $brand-color: #865cd6 !default;
 
 .chat-right{
     .msg-window{
+        flex: 1;
+        overflow: auto;
+        
         .msg{
             .ctext{
                 border-radius:10px;

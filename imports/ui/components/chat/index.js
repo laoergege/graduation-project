@@ -18,28 +18,30 @@ import withAnimate from "../animate";
 
 import { errorHnadler } from "../../../utils/util";
 
-import { getChat, msgs, sendMsg } from "../../../api/chat";
+import { getChat, sendMsg, msgs } from "../../../api/chat";
 
 class Chat extends PureComponent {
 
     state = {
         target: null,
-        value: ''
+        value: '',
+        users: null
     }
 
     componentWillMount() {
         // 若用户为学生，储存教师列表
         getChat.call(null, (error, result) => {
             if (result instanceof Array) {
-                result.map((val) => {
-                    Meteor.user.insert(val);
-                })
+               this.setState({
+                   users: result
+               })
             }
         });
     }
 
     send = () => {
         let msg = {
+            _id: (new Mongo.ObjectID())._str,
             _type: 'text',
             content: { text: this.state.value },
             from: Meteor.user()._id,
@@ -94,7 +96,7 @@ class Chat extends PureComponent {
                                 <Title> {(this.state.target && this.state.target.profile.name) || ''}</Title>
                             </Box>
                         </Box>
-                        <MsgWindow msgs={this.state.target ? msgs.find({to: this.state.target._id}).fetch() : []}/>
+                        <MsgWindow msgs={this.state.target ? msgs.find({$or: [{'from': this.state.target._id}, {to: this.state.target._id}]}).fetch() : []}/>
                         <Box direction="row" separator="top" style={{ paddingTop: "12px" }} onKeyUp={this.onEnter}>
                             <TextInput placeHolder="Type something to send" style={{ flex: '1' }} onDOMChange={this.onInput} value={this.state.value} />
                             <Anchor icon={<DocumentUpdate colorIndex="brand" />} style={{ height: '24px' }} />
@@ -108,8 +110,9 @@ class Chat extends PureComponent {
 }
 
 export default withTracker((props) => {
+    console.log(msgs.find({}, { sort: { createAt: -1 } }).fetch())
     return {
-        users: Meteor.users.find({ 'profile.roles': { $all: [2] } }).fetch(),
-        msgs: msgs.find({}, { sort: { createAt: -1 } }).fetch()
+        msgs: msgs.find({}, { sort: { createAt: -1 } }).fetch(),
+        users: Meteor.users.find().fetch().filter((val) => (val._id !== Meteor.user()._id))
     }
 })(withAnimate(Chat));

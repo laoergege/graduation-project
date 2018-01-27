@@ -6,9 +6,9 @@ import Columns from 'grommet/components/Columns';
 export default class extends PureComponent {
 
     text = (msg, i) => {
-        return  ( <Box pad='small' direction="row" className="msg" key={i}>                   
+        return  ( <Box pad='small' direction="row" className="msg" key={i} justify={msg.from === Meteor.user()._id ? 'end' : 'start'}>                   
         <Box align='center' className="ctext"
-                pad='medium'
+                pad='small'
                 colorIndex='light-2'>
                 {msg.content.text}
             </Box>
@@ -17,13 +17,13 @@ export default class extends PureComponent {
 
     render() {
         return (
-            <Box flex={true} className="msg-window">
-                <Columns size='medium'>
+            <div className="msg-window">
+                
                    {this.props.msgs && (this.props.msgs.map((val, i) => {
                        return this[val._type](val, i)
                    }))}
-                </Columns>
-            </Box>
+                
+            </div>
         )
     }
 }

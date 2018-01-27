@@ -40,6 +40,8 @@ export default class extends Component {
         Meteor.logout();
         // 清楚会话
         Session.keys = {};
+
+        this.props.history.push('/');
     }
 
     goTo = (route) => {

@@ -10,28 +10,16 @@ import Chat from 'grommet/components/icons/base/Chat';
 import Group from 'grommet/components/icons/base/Group';
 import Title from 'grommet/components/Title';
 
+import { msgs } from "../../../api/chat";
+
+import _ from "../../../utils/lodash";
+
 export default class extends PureComponent {
-
-    state = {
-        showMsg: true
-    }
-
-    toggle = (b) => {
-        return () => {
-            this.setState({
-                showMsg: b
-            })
-        }
-    }
 
     _onSelect = (target) => {
         return () => {
             if (this.props.onSelect) {
-                if (this.state.showMsg) {
-                    this.props.onSelect(target.to)
-                }else{
-                    this.props.onSelect(target)
-                }
+                this.props.onSelect(target);
             }
         }
     }
@@ -40,44 +28,34 @@ export default class extends PureComponent {
         return (
             <Box className="user-list">
                 <Box flex={true} >
-
                     {
-                        this.state.showMsg ?
-                            (
-                                this.props.msgs && (
-                                    this.props.msgs.map((val, key) => {
-                                        return (
-                                            <Box align='start' direction="row" key={key} onClick={this._onSelect(val)} className="item"
-                                                pad='small'
-                                                margin='small'
-                                                colorIndex='light-2'>
-                                                <Image src='/img/chat.png' size='thumb' style={{ objectFit: 'contain' }} />
-                                                <Box margin={{ left: 'small' }} >
-                                                    <Heading tag='h4' strong={true} truncate={true}>
-                                                        Sample Heading
-                                                </Heading>
-                                                    <span className="content">
-                                                        { val.content[val._type] || '[暂无新消息]'}
-                                                    </span>
-                                                </Box>
-                                                <Timestamp value='2018-01-24T14:32:41.596Z' fields='time' className="time" />
-                                            </Box>
-                                        )
-                                    })
-                                )
-
-                            ) :
                             (
                                 this.props.users ? (
                                     this.props.users.map((val ,key) => {
-                                        return(
-                                            <Box align='center' direction="row" key={key} onClick={this._onSelect(val)} className="item"
+                                        return (
+                                            <Box align='start' direction="row" key={key} onClick={this._onSelect(val)} className="item"
                                                 pad='small'
-                                                margin='small'
                                                 colorIndex='light-2'>
                                                 <Image src='/img/chat.png' size='thumb' style={{ objectFit: 'contain' }} />
-                                                <Box margin={{ left: 'small' }} >
-                                                    <Title>{val.profile.name}</Title> 
+                                                <Box margin={{ left: 'small' }} flex={true}>
+                                                    <Heading tag='h4' strong={true} truncate={true}>
+                                                        {val.profile.name}
+                                                    </Heading>
+                                                    <Box justify="between" direction="row">
+                                                        <span className="content">
+                                                            { 
+                                                                (() => {
+                                                                    let msg = this.props.msgs.filter((value) => (value.from === val._id || value.to === val._id))[0];
+                                                                    if (msg) {
+                                                                        return msg.content[msg._type]
+                                                                    }else{
+                                                                        return '[暂无新消息]'
+                                                                    }
+                                                                })()
+                                                            }
+                                                        </span>
+                                                        {val.createAt ? (<Timestamp value={val.createAt} fields='time' className="time" />): ''}
+                                                    </Box>        
                                                 </Box>
                                             </Box>
                                         )
@@ -89,12 +67,9 @@ export default class extends PureComponent {
                 </Box>
 
                 <Menu responsive={false} direction='row' justify="around" pad="small">
-                    <Anchor icon={<Chat />} onClick={this.toggle(true)}
-                        primary={true}>
-                    </Anchor>
-                    <Anchor icon={<Group />} onClick={this.toggle(false)}
-                        primary={true}>
-                    </Anchor>
+                {
+                        (Meteor.user() && Meteor.user().profile.roles.includes(2)) ? <Chat colorIndex="brand"/> : <Group colorIndex="brand"/>
+                }
                 </Menu>
             </Box>
         )

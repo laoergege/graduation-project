@@ -1,10 +1,14 @@
 import { Mongo } from "meteor/mongo";
 import { auth } from "../utils/util";
+import { Subject } from "rxjs";
 
 // 持久化消息储存
 const messages = new Mongo.Collection('messages');
 
-export const MsgSchema =  new SimpleSchema({
+export const MsgSchema = new SimpleSchema({
+    _id: {
+        type: String
+    },
     _type: {
         type: String
     },
@@ -24,47 +28,55 @@ export const MsgSchema =  new SimpleSchema({
     }
 })
 
-// 本地集合
-export const msgs = new Mongo.Collection('msgs', {connection: null});
+// 消息集合
+export let msgs = null;
+
+if (Meteor.isClient) {
+    msgs = new Mongo.Collection(null);
+    new Mongo.Collection('msgs').find().observe({
+        added(doc) {
+            msgs.insert(doc);
+        }
+    })
+}
+
+// msg 监听器
+const sub = new Subject();
 
 if (Meteor.isServer) {
+
     Meteor.publish('msgs', function () {
-        // 获取留言信息
-        messages.find({to: this.userId}, {sort: {createAt: -1}}).forEach((doc) => {
-
-            doc.from = Meteor.users.find({_id: doc.from});
-
-            this.added('msgs', doc._id, doc);
-        })
-        this.ready();
-        // 监听在线信息
-        msgs.find({$or: [{from: this.userId}, {to: this.userId}]}, {sort: {createAt: -1}}).observeChanges({
-            added(id, fields){
-
-                doc.from = Meteor.users.find({_id: doc.from});
-
-                this.added('msgs', id, fields);
+        // 监听消息
+        let subscription = sub.subscribe({
+            next: (doc) => {
+                // 发送给指定用户
+                if (doc.to === this.userId) {
+                    // doc.from = Meteor.users.findOne({ _id: doc.from });
+                    let user = Meteor.users.findOne({ _id: doc.from });
+                    this.added('users', user._id, user);
+                    this.added('msgs', doc._id, doc);
+                }
             }
-        })
-    })   
+        });
+        this.onStop(() => {
+            // 取消监听
+            subscription.unsubscribe();
+        });
+    })
 }
 
 export const getChat = new ValidatedMethod({
     name: 'getChat',
-    validate: () => (true),
+    validate: null,
     run() {
         auth('getChat');
-
-        let user = Meteor.user();
-
-        // 该用户为学生，获取教师列表
-        if (user.profile.roles.indexOf(3)) {
-            return Meteor.users.find({'profile.roles': {$all: [2]}})
-        }
 
         // 订阅消息
         if (Meteor.isClient) {
             Meteor.subscribe('msgs');
+            if (Meteor.user().profile.roles.includes(3)) {
+                Meteor.subscribe('Meteor.users.teachers');
+            }
         }
     }
 })
@@ -75,6 +87,12 @@ export const sendMsg = new ValidatedMethod({
     run(msg) {
         auth('getChat');
 
-        msgs.insert(msg);
+        if (Meteor.isClient) {
+            msgs.insert(msg);
+        }
+
+        if (Meteor.isServer) {
+            sub.next(msg);
+        }
     }
 })
