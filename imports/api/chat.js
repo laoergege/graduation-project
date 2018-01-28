@@ -1,9 +1,16 @@
 import { Mongo } from "meteor/mongo";
 import { auth } from "../utils/util";
 import { Subject } from "rxjs";
+import { FilesCollection } from 'meteor/ostrio:files';
+import { take } from "rxjs/operator/take";
 
 // 持久化消息储存
 const messages = new Mongo.Collection('messages');
+// 文件暂存
+export const Images = new FilesCollection({
+    collectionName: 'ChatFile',
+    storagePath: 'assets/chatUpload'
+});
 
 export const MsgSchema = new SimpleSchema({
     _id: {
@@ -51,10 +58,14 @@ if (Meteor.isServer) {
             next: (doc) => {
                 // 发送给指定用户
                 if (doc.to === this.userId) {
-                    // doc.from = Meteor.users.findOne({ _id: doc.from });
-                    let user = Meteor.users.findOne({ _id: doc.from });
-                    this.added('users', user._id, user);
-                    this.added('msgs', doc._id, doc);
+                    try {
+                        // doc.from = Meteor.users.findOne({ _id: doc.from });
+                        let user = Meteor.users.findOne({ _id: doc.from });
+                        this.added('users', user._id, user);
+                        this.added('msgs', doc._id, doc);
+                    } catch (error) {
+                        throw (new Meteor.Error('server-error', '服务器出现问题了'));
+                    }
                 }
             }
         });
@@ -96,3 +107,4 @@ export const sendMsg = new ValidatedMethod({
         }
     }
 })
+

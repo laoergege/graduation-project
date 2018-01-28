@@ -33,7 +33,7 @@ class Chat extends PureComponent {
 
     send = () => {
         if (!this.state.target) {
-            Session.set('info', {status: 'warning', content: '请先选择对象！'})
+            Session.set('info', { status: 'warning', content: '请先选择对象！' })
         }
 
         if (this.state.value.trim() === '') {
@@ -81,6 +81,33 @@ class Chat extends PureComponent {
         })
     }
 
+    openFD = () => {
+        this.msgwindow.openFD();
+    }
+
+    onDrop = (files) => {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            let result = reader.result;
+
+            let msg = {
+                _id: (new Mongo.ObjectID())._str,
+                _type: 'image',
+                content: { image: result },
+                from: Meteor.user()._id,
+                to: this.state.target && this.state.target._id,
+                createAt: new Date()
+            }
+            
+            msgs.insert(msg)
+        };
+
+        files.forEach(file => {
+           reader.readAsDataURL(file);
+        });
+    }
+
     render() {
         return (
             <Box
@@ -92,17 +119,18 @@ class Chat extends PureComponent {
                     </Box>
                     <Box colorIndex='light-1' pad="small" size={{ width: "large", height: 'large' }} separator="left"
                         justify="end" className="chat-right">
-                        <Box align='center' direction="row"  separator="bottom" style={{height: '30px'}}
+                        <Box align='center' direction="row" separator="bottom" style={{ height: '30px' }}
                             pad='small'>
-                            {this.state.target && ( <Image src='/img/chat.png' size='thumb' style={{ objectFit: 'contain' }} />) }
+                            {this.state.target && (<Image src='/img/chat.png' size='thumb' style={{ objectFit: 'contain' }} />)}
                             <Box margin={{ left: 'small' }} >
                                 <Title> {(this.state.target && this.state.target.profile.name) || ''}</Title>
                             </Box>
                         </Box>
-                        <MsgWindow msgs={this.state.target ? msgs.find({$or: [{'from': this.state.target._id}, {to: this.state.target._id}]}).fetch() : []}/>
+                        <MsgWindow msgs={this.state.target ? msgs.find({ $or: [{ 'from': this.state.target._id }, { to: this.state.target._id }] }).fetch() : []}
+                            ref={(mw) => { this.msgwindow = mw; }} onDrop={this.onDrop} />
                         <Box direction="row" separator="top" style={{ paddingTop: "12px" }} onKeyUp={this.onEnter}>
                             <TextInput placeHolder="Type something to send" style={{ flex: '1' }} onDOMChange={this.onInput} value={this.state.value} />
-                            <Anchor icon={<DocumentUpdate colorIndex="brand" />} style={{ height: '24px' }} />
+                            <Anchor icon={<DocumentUpdate colorIndex="brand" />} style={{ height: '24px' }} onClick={this.openFD} />
                             <Anchor icon={<Send colorIndex="brand" />} style={{ height: '24px' }} onClick={this.send} />
                         </Box>
                     </Box>
