@@ -32,6 +32,7 @@
     "react": "^16.2.0",
     "react-desc": "^1.0.0",
     "react-dom": "^16.2.0",
+    "react-dropzone": "^4.2.7",
     "react-intl": "^2.2.3",
     "react-quill": "^1.2.3",
     "react-router": "^4.2.0",

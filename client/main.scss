@@ -143,7 +143,10 @@ $brand-color: #865cd6 !default;
     .msg-window{
         flex: 1;
         overflow: auto;
-        
+
+        &::-webkit-scrollbar {
+            width: 0px;
+        }
         .msg{
             .ctext{
                 border-radius:10px;

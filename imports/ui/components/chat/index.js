@@ -24,22 +24,25 @@ class Chat extends PureComponent {
 
     state = {
         target: null,
-        value: '',
-        users: null
+        value: ''
     }
 
     componentWillMount() {
-        // 若用户为学生，储存教师列表
-        getChat.call(null, (error, result) => {
-            if (result instanceof Array) {
-               this.setState({
-                   users: result
-               })
-            }
-        });
+        getChat.call();
     }
 
     send = () => {
+        if (!this.state.target) {
+            Session.set('info', {status: 'warning', content: '请先选择对象！'})
+        }
+
+        if (this.state.value.trim() === '') {
+            this.setState({
+                value: ''
+            })
+            return;
+        }
+
         let msg = {
             _id: (new Mongo.ObjectID())._str,
             _type: 'text',

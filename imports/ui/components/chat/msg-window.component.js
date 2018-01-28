@@ -1,4 +1,5 @@
 import React, { PureComponent } from "react";
+import { findDOMNode } from "react-dom";
 
 import Box from 'grommet/components/Box';
 import Columns from 'grommet/components/Columns';
@@ -6,10 +7,15 @@ import Columns from 'grommet/components/Columns';
 export default class extends PureComponent {
 
     text = (msg, i) => {
-        return  ( <Box pad='small' direction="row" className="msg" key={i} justify={msg.from === Meteor.user()._id ? 'end' : 'start'}>                   
+        return  ( <Box pad='small' direction="row" className="msg" key={i} justify={msg.from === Meteor.user()._id ? 'end' : 'start'} 
+            ref={(comp) => { 
+                if (comp) {
+                    findDOMNode(comp).scrollIntoView();
+                }
+            }}>                   
         <Box align='center' className="ctext"
                 pad='small'
-                colorIndex='light-2'>
+                colorIndex={msg.from === Meteor.user()._id ? 'ok' : 'light-2' }>
                 {msg.content.text}
             </Box>
         </Box>)
