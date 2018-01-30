@@ -47,7 +47,7 @@ export default class extends PureComponent {
                                                                 (() => {
                                                                     let msg = this.props.msgs.filter((value) => (value.from === val._id || value.to === val._id))[0];
                                                                     if (msg) {
-                                                                        return msg._type === 'text' ? msg.content[msg._type] : '[Image]'
+                                                                        return msg._type === 'text' ? msg.content[msg._type] : (msg._type === 'file' ? '[File]' : '[Image]' )
                                                                     }else{
                                                                         return '[暂无新消息]'
                                                                     }

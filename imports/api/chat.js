@@ -7,7 +7,7 @@ import { take } from "rxjs/operator/take";
 // 持久化消息储存
 const messages = new Mongo.Collection('messages');
 // 文件暂存
-export const Images = new FilesCollection({
+export const chatfiles = new FilesCollection({
     collectionName: 'ChatFile',
     storagePath: 'assets/chatUpload'
 });
@@ -35,11 +35,12 @@ export const MsgSchema = new SimpleSchema({
     }
 })
 
-// 消息集合
+// 消息储存集合
 export let msgs = null;
 
 if (Meteor.isClient) {
     msgs = new Mongo.Collection(null);
+    // 接受服务端信息器
     new Mongo.Collection('msgs').find().observe({
         added(doc) {
             msgs.insert(doc);
@@ -74,6 +75,10 @@ if (Meteor.isServer) {
             subscription.unsubscribe();
         });
     })
+
+    Meteor.publish('chatfiles', function () {
+        return chatfiles.collection.find({ userId: this.userId })
+    })
 }
 
 export const getChat = new ValidatedMethod({
@@ -85,6 +90,7 @@ export const getChat = new ValidatedMethod({
         // 订阅消息
         if (Meteor.isClient) {
             Meteor.subscribe('msgs');
+            // Meteor.subscribe('chatfiles');
             if (Meteor.user().profile.roles.includes(3)) {
                 Meteor.subscribe('Meteor.users.teachers');
             }
@@ -98,11 +104,11 @@ export const sendMsg = new ValidatedMethod({
     run(msg) {
         auth('getChat');
 
-        if (Meteor.isClient) {
-            msgs.insert(msg);
-        }
-
         if (Meteor.isServer) {
+            if (msg._type !== 'text') {
+                msg.content[msg._type] = chatfiles.findOne({ _id: msg.content[msg._type] }).link();
+            }
+
             sub.next(msg);
         }
     }

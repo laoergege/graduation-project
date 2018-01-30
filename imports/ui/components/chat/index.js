@@ -18,7 +18,7 @@ import withAnimate from "../animate";
 
 import { errorHnadler } from "../../../utils/util";
 
-import { getChat, sendMsg, msgs } from "../../../api/chat";
+import { getChat, sendMsg, msgs, chatfiles } from "../../../api/chat";
 
 class Chat extends PureComponent {
 
@@ -52,15 +52,18 @@ class Chat extends PureComponent {
             createAt: new Date()
         }
 
-        sendMsg.call(msg, (error) => {
-            if (error) {
-                errorHnadler(error);
-            } else {
-                this.setState({
-                    value: ''
-                })
-            }
-        });
+        msgs.insert(msg, () => {
+            sendMsg.call(msg, (error) => {
+                if (error) {
+                    errorHnadler(error);
+                } else {
+                    this.setState({
+                        value: ''
+                    })
+                }
+            });
+        })
+
     }
 
     onEnter = (event) => {
@@ -86,25 +89,59 @@ class Chat extends PureComponent {
     }
 
     onDrop = (files) => {
+        if (!this.state.target) {
+            Session.set('info', { status: 'warning', content: '请先选择对象！' })
+            return;
+        }
+
         const reader = new FileReader();
 
-        reader.onload = () => {
-            let result = reader.result;
-
-            let msg = {
+        reader.onload = () => { 
+            msgs.insert({
                 _id: (new Mongo.ObjectID())._str,
                 _type: 'image',
-                content: { image: result },
+                content: { image: reader.result },
                 from: Meteor.user()._id,
                 to: this.state.target && this.state.target._id,
                 createAt: new Date()
-            }
-            
-            msgs.insert(msg)
+            })
         };
 
         files.forEach(file => {
-           reader.readAsDataURL(file);
+            let res = file.type.includes('image');
+
+            if (res) {
+                reader.readAsDataURL(file);
+            }else{
+                msgs.insert({
+                    _id: (new Mongo.ObjectID())._str,
+                    _type: 'file',
+                    content: {name: file.name, size: file.size},
+                    from: Meteor.user()._id,
+                    to: this.state.target && this.state.target._id,
+                    createAt: new Date()
+                });
+            }
+          
+            chatfiles.insert({
+                file: file,
+                streams: 'dynamic',
+                chunkSize: 'dynamic',
+                onUploaded: (error, fileObj) => {
+                    if (error) {
+                        Session.set('info', { status: 'critical', content: error })
+                    } else {
+                        sendMsg.call({
+                            _id: (new Mongo.ObjectID())._str,
+                            _type: res ? 'image' : 'file',
+                            content: res ? ({ image: fileObj._id }) : ({name: fileObj.name, size: fileObj.size, file: fileObj._id}),
+                            from: Meteor.user()._id,
+                            to: this.state.target && this.state.target._id,
+                            createAt: new Date()
+                        });
+                    }
+                }
+            })
         });
     }
 
