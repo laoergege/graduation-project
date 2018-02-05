@@ -16,6 +16,8 @@ import Button from 'grommet/components/Button';
 import UserSettings from 'grommet/components/icons/base/UserSettings';
 import Logout from 'grommet/components/icons/base/Logout';
 
+import { msgs } from "../../../api/chat";
+
 export default class extends Component {
 
     constructor(props) {
@@ -23,6 +25,13 @@ export default class extends Component {
         this.state = {
             logining: false
         }
+    }
+
+    subscriptions = [];
+
+    componentWillMount(){
+         // 订阅用户信息
+         this.subscriptions.push(Meteor.subscribe("Meteor.users.initials"));  
     }
 
     toggoleLogForm = (e) => {
@@ -34,12 +43,29 @@ export default class extends Component {
         }))
     }
 
+    // 登录
+    login = ({username, password}, toggle) => {
+        Meteor.loginWithPassword(username, password, (error) => {
+            if(error)
+                Session.set('info', {status: 'warning', content: '用户名或密码错误！'});
+            else{
+                toggle();
+                // 订阅用户信息
+                this.subscriptions.push(Meteor.subscribe("Meteor.users.initials"));               
+            }
+        })
+    }
+
     logout = (e) => {
         e.preventDefault();
 
+        this.subscriptions.forEach(val => {
+            val && val.stop();
+        });
+
+        msgs.remove({});
+
         Meteor.logout();
-        // 清楚会话
-        Session.keys = {};
 
         this.props.history.push('/');
     }
@@ -65,13 +91,16 @@ export default class extends Component {
                             <Link to="/NotFound">首页</Link>
                         </Anchor>
                         <Anchor href="#" onClick={this.goTo('/courses')}>课程</Anchor>
+                        <Anchor href="#">作业</Anchor>
+                        <Anchor href="#">资源</Anchor>     
                         {
                             this.props.permissions && this.props.permissions.getChat && (
-                                <Anchor href="#" onClick={this.goTo('/chat')}>答疑</Anchor>
+                                <Anchor href="#" onClick={() => {
+                                    Session.set('notice', 0);
+                                    this.props.history.push('/chat');
+                                }}>答疑{this.props.notice ? `(+${this.props.notice})` : '' }</Anchor>
                             )
-                        }
-                        <Anchor href="#">作业</Anchor>
-                        <Anchor href="#">资源</Anchor>                        
+                        }                   
                     </Menu>
 
                     <Box>
@@ -102,7 +131,7 @@ export default class extends Component {
                     />}>
                         <LoginForm
                             onSubmit={(user) => {
-                                this.props.login(user, this.toggoleLogForm)
+                                this.login(user, this.toggoleLogForm)
                             }}
                             title='Welcome to login'
                             secondaryText='please input your username and password'
@@ -117,8 +146,3 @@ export default class extends Component {
     }
 }
 
-/**
- * props{
- *  login: function 接受登录回调方法，回调参数有 user 用户登录信息 toggoleLogForm 切换模态框
- * }
- */

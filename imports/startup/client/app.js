@@ -9,14 +9,28 @@ import Course from "../../ui/components/main";
 import { courses } from "../../api/course";
 import Main from "../../ui/components/main";
 import CourseDetail from "../../ui/components/courseDetail";
+import '../../api/chat';
 
 import Bundle from "../../utils/bundle";
 
+import Spinning from 'grommet/components/icons/Spinning';
+import Box from 'grommet/components/Box';
+
 export default class App extends Component {
 
+    subscriptions = [];
+
     componentWillMount() {
-        Meteor.subscribe('Meteor.users.initials');
-        Meteor.subscribe('courses', { limit: 4, length: 0 });
+        // 订阅课程
+        this.subscriptions.push(Meteor.subscribe('courses', { limit: 4, length: 0 }));
+        // 获取当前用户消息
+        this.subscriptions.push(Meteor.subscribe("msgs"));
+    }
+
+    componentWillUnmount() {
+        this.subscriptions.forEach(val => {
+            val && val.stop();
+        })
     }
 
     chatModule = async (callBack) => {
@@ -28,6 +42,24 @@ export default class App extends Component {
         return (
             <Switch>
                 <Redirect exact from="/" to="/courses" />
+
+                <Route exact path="/chat" render={() => {
+                    let permissions = Session.get('permissions');
+
+                    if (permissions && permissions.getChat) {
+                        return (
+                            <Bundle load={this.chatModule}>
+                                {(Comp) => Comp
+                                    ? <Comp />
+                                    : (<Box full={true} align="center" justify="center" direction="row">正在进入答疑系统<Spinning /></Box>)
+                                }
+                            </Bundle>
+                        )
+                    } else {  //非法进入
+                        return (<Redirect push={true} to="/" />)
+                    }
+                }} />
+
                 <Route path="/" render={(props) => {
                     Session.set('history', props.history);
 
@@ -58,27 +90,11 @@ export default class App extends Component {
                                     return (<Redirect from="/courses/:name" to="/courses" />)
                                 }
                             }} />
-
-                            <Route exact path="/chat" render={() => {
-                                let permissions = Session.get('permissions');
-
-                                if (permissions && permissions.getChat) {
-                                    return (
-                                        <Bundle load={this.chatModule}>
-                                            {(Comp) => Comp
-                                                ? <Comp />
-                                                : ''
-                                            }
-                                        </Bundle>
-                                    )
-                                } else {  //非法进入，回到列表页
-                                    return (<Redirect push={true} to="/courses" />)
-                                }
-                            }} />
                         </Index>
                     )
                 }}>
                 </Route>
+
                 <Route component={NotFound} />
             </Switch>
         )

@@ -7,13 +7,6 @@ import Image from 'grommet/components/Image';
 import Layer from 'grommet/components/Layer';
 import Heading from 'grommet/components/Heading';
 import Anchor from 'grommet/components/Anchor';
-
-import DocumentText from 'grommet/components/icons/base/DocumentText';
-import DocumentPpt from 'grommet/components/icons/base/DocumentPpt';
-import DocumentExcel from 'grommet/components/icons/base/DocumentExcel';
-import DocumentTxt from 'grommet/components/icons/base/DocumentTxt';
-import DocumentPdf from 'grommet/components/icons/base/DocumentPdf';
-import DocumentZip from 'grommet/components/icons/base/DocumentZip';
 import Download from 'grommet/components/icons/base/Download';
 
 

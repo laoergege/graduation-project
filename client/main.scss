@@ -115,46 +115,6 @@ $brand-color: #865cd6 !default;
     
 }
 
-.chat-left {
-    .search > input{
-        border:none;
-    }
-
-    .user-list{
-        height: 100%;
-        
-        .item{
-            cursor: pointer;
-            margin-bottom: 3px;
-
-            .time,.content{
-                color:#a8a8a8;
-            }
-    
-            .time{
-                align-self: center;
-                margin-left: auto;
-            }
-        }
-    }
-}
-
-.chat-right{
-    .msg-window{
-        flex: 1;
-        overflow: auto;
-
-        &::-webkit-scrollbar {
-            width: 0px;
-        }
-        .msg{
-            .ctext{
-                border-radius:10px;
-            }
-        }
-    }
-}
-
 
 /*******/
 header{

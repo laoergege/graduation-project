@@ -16,10 +16,19 @@ import _ from "../../../utils/lodash";
 
 export default class extends PureComponent {
 
+    state = {
+        target: {_id: 0}
+    }
+
     _onSelect = (target) => {
         return () => {
             if (this.props.onSelect) {
                 this.props.onSelect(target);
+                this.state.target = target;
+
+                Session.set(target._id, false);
+
+                this.forceUpdate()
             }
         }
     }
@@ -35,26 +44,34 @@ export default class extends PureComponent {
                                         return (
                                             <Box align='start' direction="row" key={key} onClick={this._onSelect(val)} className="item"
                                                 pad='small'
-                                                colorIndex='light-2'>
+                                                colorIndex={ this.state.target._id === val._id ? 'light-2' : 'light-1' }>
                                                 <Image src='/img/chat.png' size='thumb' style={{ objectFit: 'contain' }} />
+                                                <div className="notice" style={{opacity: (Session.get(val._id) && val._id != this.state.target._id) ? 1 : 0}}></div>
                                                 <Box margin={{ left: 'small' }} flex={true}>
-                                                    <Heading tag='h4' strong={true} truncate={true}>
-                                                        {val.profile.name}
-                                                    </Heading>
                                                     <Box justify="between" direction="row">
-                                                        <span className="content">
-                                                            { 
-                                                                (() => {
-                                                                    let msg = this.props.msgs.filter((value) => (value.from === val._id || value.to === val._id))[0];
-                                                                    if (msg) {
-                                                                        return msg._type === 'text' ? msg.content[msg._type] : (msg._type === 'file' ? '[File]' : '[Image]' )
-                                                                    }else{
-                                                                        return '[暂无新消息]'
-                                                                    }
-                                                                })()
-                                                            }
-                                                        </span>
-                                                        {val.createAt ? (<Timestamp value={val.createAt} fields='time' className="time" />): ''}
+                                                        <Heading tag='h4' strong={true} truncate={true} className={ val.status.online ? 'online' : 'outline'}>
+                                                            {val.profile.name}
+                                                        </Heading>
+                                                        {
+                                                            val.status.online || <span className="outline">离线</span>
+                                                        }
+                                                    </Box>
+                                                    <Box justify="between" direction="row">
+                                                        {
+                                                            (() => {
+                                                                let msg = this.props.msgs.filter((value) => (value.from === val._id || value.to === val._id))[0];
+                                                                if (msg) {
+                                                                    return (
+                                                                        [
+                                                                            (<span key={1} className="content">{msg._type === 'text' ? msg.content[msg._type] : (msg._type === 'file' ? '[File]' : '[Image]' )}</span>),
+                                                                            (<Timestamp key={2} value={val.createAt} fields={['month', 'day', 'time']} className="time" />)
+                                                                        ]
+                                                                    )
+                                                                }else{
+                                                                    return (<span className="content">[暂无新消息]</span>)
+                                                                }
+                                                            })()
+                                                        }
                                                     </Box>        
                                                 </Box>
                                             </Box>
@@ -75,11 +92,9 @@ export default class extends PureComponent {
         )
     }
 }
-
 /**
  * props{
  *  users,
- *  msgs,
  *  onSelect: function(to) 选择对象
  * }
  */

@@ -2,7 +2,6 @@ import { Mongo } from "meteor/mongo";
 import { auth } from "../utils/util";
 import { Subject } from "rxjs";
 import { FilesCollection } from 'meteor/ostrio:files';
-import { take } from "rxjs/operator/take";
 
 // 持久化消息储存
 const messages = new Mongo.Collection('messages');
@@ -44,6 +43,8 @@ if (Meteor.isClient) {
     new Mongo.Collection('msgs').find().observe({
         added(doc) {
             msgs.insert(doc);
+            Session.set('notice', (Session.get('notice') || 0) + 1);
+            Session.set(doc.from, true);
         }
     })
 }
@@ -54,6 +55,21 @@ const sub = new Subject();
 if (Meteor.isServer) {
 
     Meteor.publish('msgs', function () {
+        let outlineMsgs = [];
+
+        // 发送离线消息
+        messages.find({to: this.userId}).forEach(msg => {
+            let user = Meteor.users.findOne({ _id: doc.from }, { fields: { _id: 1, username: 1, email: 1, profile: 1, permissions: 1, status: 1 } });
+            this.added('users', user._id, user);
+            this.added('msgs', msg._id, msg);
+            outlineMsgs.push(msg._id);
+        });
+
+        this.ready();
+
+        // 删除离线消息
+        messages.remove({_id: {$in: outlineMsgs}});
+
         // 监听消息
         let subscription = sub.subscribe({
             next: (doc) => {
@@ -61,7 +77,7 @@ if (Meteor.isServer) {
                 if (doc.to === this.userId) {
                     try {
                         // doc.from = Meteor.users.findOne({ _id: doc.from });
-                        let user = Meteor.users.findOne({ _id: doc.from });
+                        let user = Meteor.users.findOne({ _id: doc.from }, { fields: { _id: 1, username: 1, email: 1, profile: 1, permissions: 1, status: 1 } });
                         this.added('users', user._id, user);
                         this.added('msgs', doc._id, doc);
                     } catch (error) {
@@ -81,23 +97,6 @@ if (Meteor.isServer) {
     })
 }
 
-export const getChat = new ValidatedMethod({
-    name: 'getChat',
-    validate: null,
-    run() {
-        auth('getChat');
-
-        // 订阅消息
-        if (Meteor.isClient) {
-            Meteor.subscribe('msgs');
-            // Meteor.subscribe('chatfiles');
-            if (Meteor.user().profile.roles.includes(3)) {
-                Meteor.subscribe('Meteor.users.teachers');
-            }
-        }
-    }
-})
-
 export const sendMsg = new ValidatedMethod({
     name: 'sendMsg',
     validate: MsgSchema.validator(),
@@ -108,8 +107,12 @@ export const sendMsg = new ValidatedMethod({
             if (msg._type !== 'text') {
                 msg.content[msg._type] = chatfiles.findOne({ _id: msg.content[msg._type] }).link();
             }
-
-            sub.next(msg);
+            // 判断当前用户是否在线
+            if (!Meteor.users.findOne({_id: msg.to}).status.online) {
+                messages.insert(msg);
+            }else{
+                sub.next(msg);
+            }
         }
     }
 })
