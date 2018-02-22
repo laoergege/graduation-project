@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Route } from "react-router";
 
 import './main.scss';
 
@@ -10,12 +11,16 @@ import Edit from "grommet/components/icons/base/Edit";
 
 import Header from "../header";
 import CourseItem from "../courseItem";
+import HwList from "../homework/hw-list.component";
 
 export default class Main extends Component {
 
-    constructor(props){
+    constructor(props) {
         super();
         this.course = Object.assign({}, props.course);
+        this.state = {
+            main: null
+        }
     }
 
     saverFactory = (key) => {
@@ -40,6 +45,10 @@ export default class Main extends Component {
         this.props.history.push('/courses/' + this.props.match.params.name + '/content');
     }
 
+    componentWillMount() {
+        Session.set('course', this.props.course);
+    }
+
     render() {
         return (
             <div className="main-v-2018112205">
@@ -54,8 +63,8 @@ export default class Main extends Component {
                         flex={true} >
                         <Box size={{ width: 'xxlarge', height: 'medium' }} direction="row" responsive={true} justify="center"
                             pad="small">
-                            <CourseItem editAble={this.props.permissions && this.props.permissions.editCourse } onChange={this.itemChange}  
-                                title={(this.course.info && this.course.info.title) || this.course.name} 
+                            <CourseItem editAble={this.props.permissions && this.props.permissions.editCourse} onChange={this.itemChange}
+                                title={(this.course.info && this.course.info.title) || this.course.name}
                                 intro={(this.course.info && this.course.info.intro) || ''}
                                 img={(this.course.info && this.course.info.img) || ''} />
                         </Box>
@@ -93,6 +102,14 @@ export default class Main extends Component {
                                         </Anchor>
                                     )
                                 }
+                                {
+                                    this.props.permissions && this.props.permissions.getHW && (
+                                        <Anchor path={`${this.props.match.url}/homeworks`}>
+                                            作业
+                                        </Anchor>
+                                    )
+                                }
+
                             </Menu>
                         </Box>
                     </Box>
@@ -104,11 +121,11 @@ export default class Main extends Component {
                     pad={{ between: "small" }} justify="center" direction="row">
 
                     <Box colorIndex="light-1"
-                        justify='center'
-                        align='center'
                         pad='medium'
-                        size={{ width: 'xxlarge' }}>
-                        
+                        size={{ width: 'xlarge' }}>
+                        <Route path={`${this.props.match.path}/homeworks`} render={() => {
+                            return <HwList courseid={this.props.course._id} />
+                        }} />
                     </Box>
                     <Box
                         colorIndex="ok"

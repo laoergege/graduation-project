@@ -7,7 +7,7 @@ import Button from "grommet/components/Button";
 import Heading from "grommet/components/Heading";
 import Box from 'grommet/components/Box';
 
-export default function(title, onclick) {
+export default function (title, onclick) {
     let destroy;
     let name;
 
@@ -19,21 +19,14 @@ export default function(title, onclick) {
     let form = (
         <Box
             colorIndex="light-1"
-            direction="column" justify="around"
-            size={{ width: { min: "medium" }, height: { min: "medium" } }}
-            pad="small">
-            <Heading align="center">
-                {title}
-            </Heading>
-            <TextInput placeHolder={`请输入${title}名称`} onDOMChange={(e) => {
+            direction="row" justify="between"
+            size={{ width: { min: "medium" } }}
+            pad={{ vertical: 'small' }}>
+            <TextInput placeHolder={`请输入${title}名称`} style={{marginRight: '5px'}} onDOMChange={(e) => {
                 name = e.target.value;
             }} />
-            <Box
-                colorIndex="light-1"
-                direction="row" justify="between"
-                size={{ width: { min: "medium" } }}
-                pad="small">
-                <Button label='取消' onClick={() => {
+            <Box direction="row" >
+                <Button label='取消' style={{marginRight: '5px'}} onClick={() => {
                     destroy();
                 }} />
                 <Button label='新增' primary={true} onClick={onClick} />

@@ -43,7 +43,9 @@ if (Meteor.isClient) {
     new Mongo.Collection('msgs').find().observe({
         added(doc) {
             msgs.insert(doc);
-            Session.set('notice', (Session.get('notice') || 0) + 1);
+            if (location.pathname !== '/chat') {
+                Session.set('notice', (Session.get('notice') || 0) + 1);   
+            }
             Session.set(doc.from, true);
         }
     })
@@ -59,7 +61,7 @@ if (Meteor.isServer) {
 
         // 发送离线消息
         messages.find({to: this.userId}).forEach(msg => {
-            let user = Meteor.users.findOne({ _id: doc.from }, { fields: { _id: 1, username: 1, email: 1, profile: 1, permissions: 1, status: 1 } });
+            let user = Meteor.users.findOne({ _id: msg.from }, { fields: { _id: 1, username: 1, email: 1, profile: 1, permissions: 1, status: 1 } });
             this.added('users', user._id, user);
             this.added('msgs', msg._id, msg);
             outlineMsgs.push(msg._id);

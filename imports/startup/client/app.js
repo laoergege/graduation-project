@@ -38,10 +38,54 @@ export default class App extends Component {
         callBack(Chat);
     }
 
+    homeworkModule = async (callBack) => {
+        const HW = (await import("/imports/ui/components/homework")).default;
+        callBack(HW);
+    }
+
+    mcModule = async (callBack) => {
+        const mc = (await import("/imports/ui/components/management")).default;
+        callBack(mc);
+    }
+
     render() {
         return (
             <Switch>
                 <Redirect exact from="/" to="/courses" />
+
+                <Route path="/managementcenter" render={(props) => {
+                    let permissions = Session.get('permissions');
+
+                    if (permissions) {
+                        return (
+                            <Bundle load={this.mcModule}>
+                                {(Comp) => Comp
+                                    ? <Comp {...props}/>
+                                    : (<Box full={true} align="center" justify="center" direction="row">正在进入管理中 <Spinning /></Box>)
+                                }
+                            </Bundle>
+                        )
+                    } else {
+                        return (<Redirect push={true} to="/" />)
+                    }
+                }} />
+
+                <Route path="/homeworks/:id" render={(props) => {
+                    let permissions = Session.get('permissions');
+
+                    if (permissions) {
+                        return (
+                            <Bundle load={this.homeworkModule}>
+                                {(Comp) => Comp
+                                    ? <Comp {...props}/>
+                                    : (<Box full={true} align="center" justify="center" direction="row">正在进入作业系统<Spinning /></Box>)
+                                }
+                            </Bundle>
+                        )
+                    } else {
+                        return (<Redirect push={true} to="/" />)
+                    }
+                }} />
 
                 <Route exact path="/chat" render={() => {
                     let permissions = Session.get('permissions');
@@ -65,31 +109,35 @@ export default class App extends Component {
 
                     return (
                         <Index {...props}>
-                            <Route exact path="/courses" component={Courses} />
-                            <Route exact path="/courses/:name" render={(props) => {
+                            <Switch>
+                                <Route exact path="/courses" component={Courses} />
 
-                                let course = courses.find({ name: props.match.params.name }).fetch()[0];
+                                <Route path="/courses/:name/content" render={(props) => {
+                                    let course = courses.find({ name: props.match.params.name }).fetch()[0];
 
-                                if (course) { //从课程列表页进入课程页
-                                    return (<Main {...props} course={course} />);
-                                } else if (Session.get('courseName')) {  //添加课程进入
-                                    return (<Main {...props} course={{ name: Session.get('courseName') }} />);
-                                } else {  //非法进入，回到列表页
-                                    return (<Redirect from="/courses/:name" to="/courses" />)
-                                }
+                                    if (course) {
+                                        return (<CourseDetail {...props} course={course} />)
+                                    } else {  //非法进入，回到列表页
+                                        return (<Redirect from="/courses/:name" to="/courses" />)
+                                    }
+                                }} />
+
+                                <Route path="/courses/:name" render={(props) => {
+
+                                    let course = courses.find({ name: props.match.params.name }).fetch()[0];
+
+                                    if (course) { //从课程列表页进入课程页
+                                        return (<Main {...props} course={course} />);
+                                    } else if (Session.get('courseName')) {  //添加课程进入
+                                        return (<Main {...props} course={{ name: Session.get('courseName') }} />);
+                                    } else {  //非法进入，回到列表页
+                                        return (<Redirect from="/courses/:name" to="/courses" />)
+                                    }
 
 
-                            }} />
+                                }} />
+                            </Switch>
 
-                            <Route path="/courses/:name/content" render={(props) => {
-                                let course = courses.find({ name: props.match.params.name }).fetch()[0];
-
-                                if (course) {
-                                    return (<CourseDetail {...props} course={course} />)
-                                } else {  //非法进入，回到列表页
-                                    return (<Redirect from="/courses/:name" to="/courses" />)
-                                }
-                            }} />
                         </Index>
                     )
                 }}>

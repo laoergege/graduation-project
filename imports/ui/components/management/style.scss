@@ -1,0 +1,26 @@
+.mc{
+    *{
+        box-sizing: border-box;
+    }
+
+    .mc-sidebar{
+        a{
+            font-size: 16px;
+        }
+    }
+
+    .mc-header{
+        box-shadow: 0px 2px #eee;
+    }
+
+    .mc-um{
+        .tool{
+            *{
+                margin: 0 4px;
+            }
+            .search{
+                margin-left: auto;
+            }
+        }
+    }
+}

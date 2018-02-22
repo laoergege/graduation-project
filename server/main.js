@@ -6,9 +6,10 @@ import "../imports/api/course";
 import "../imports/api/users";
 import "../imports/api/sections";
 import "../imports/api/chat";
+import "../imports/api/homework";
 
 Meteor.startup(() => {
-   
+
     // // 创建 root 账号
     // if(!Meteor.users.findOne({username: 'root'})){
     //     Accounts.createUser({
@@ -80,4 +81,39 @@ Meteor.startup(() => {
     //         }
     //     })
     // }
+
+    // for (let index = 1; index < 100; index++) {
+    //     Accounts.createUser({
+    //         username: 'student'+ index,
+    //         password: 'student'+ index,
+    //         profile: {
+    //             name: '圣所'+ index,
+    //             avater: '',
+    //             intro: '',
+    //             num: index,
+    //             role: 3
+    //         }
+    //     })
+    // }
+
+    // for (let index = 1; index < 10; index++) {
+    //     Accounts.createUser({
+    //         username: 'teacher'+ index,
+    //         password: 'teacher'+ index,
+    //         profile: {
+    //             name: 'lys'+ index,
+    //             avater: '',
+    //             intro: '',
+    //             num: index,
+    //             role: 2
+    //         }
+    //     })
+    // }
+
+    // Meteor.users.find().map(val => {
+    //     console.log(1)
+    //     if (val.profile.role) {
+    //         console.log(Meteor.users.update({_id: val._id}, {$set: { 'profile.roles': [val.profile.role]}}))
+    //     }
+    // })
 })
