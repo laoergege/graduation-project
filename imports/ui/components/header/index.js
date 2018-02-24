@@ -5,7 +5,12 @@ import { withRouter } from 'react-router'
 export default withTracker((props) => {
     if (Meteor.user() && Meteor.user().permissions) {
         let permissions = {};
-        Meteor.user().permissions.map(val => permissions[val.method] = val.allow);
+        Meteor.user().permissions.map(val => {
+            permissions[val.method] = val.allow;
+            if (Session.get('course') && !Session.get('course').teachers.includes(Meteor.userId())) {
+                permissions['editCourse'] = false;
+            } 
+        })
         Session.set('permissions', permissions);
     }else{
          // 清楚会话

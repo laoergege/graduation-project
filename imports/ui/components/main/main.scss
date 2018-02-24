@@ -24,3 +24,9 @@
         padding-top: 16px;
     }
 }
+
+.hide-toolbar{ 
+    .ql-toolbar{
+        display: none;
+    }
+}

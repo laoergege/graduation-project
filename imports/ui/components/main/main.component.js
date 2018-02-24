@@ -101,17 +101,6 @@ export default class Main extends Component {
     componentWillMount() {
         Session.set('course', this.props.course);
         this.props.history.push(`${this.props.match.url}/介绍`);
-        if (!this.course.teachers.includes(Meteor.userId())) {
-            Session.get('permissions').editCourse = false;
-            Session.set('permissions', Session.get('permissions'));
-        }
-    }
-
-    componentWillReceiveProps() {
-        if (!this.course.teachers.includes(Meteor.userId())) {
-            Session.get('permissions').editCourse = false;
-            Session.set('permissions', Session.get('permissions'));
-        }
     }
 
     render() {
@@ -199,7 +188,7 @@ export default class Main extends Component {
                             }} />
                         }} />
                         <Route path={`${this.props.match.path}/教师介绍`} render={() => {
-                            return <TeachersInto teachers={this.props.course.teachers} />
+                            return <TeachersInto courseid={this.props.course._id} />
                         }} />
                         <Route path={`${this.props.match.path}/评价`} render={() => {
                             return <Comment evaluate={this.props.course.evaluate} onSubmit={this.onEvalue} />

@@ -25,7 +25,7 @@ export class Intro extends PureComponent {
     }
 
     render() {
-        let quillClassname = classNames('ql-flex', {'hide-toolbar': this.props.permissions ? this.props.permissions.editCourse : false })
+        let quillClassname = classNames({ 'hide-toolbar': this.props.permissions && !this.props.permissions.editCourse })
 
         return (
             <Box
@@ -34,7 +34,7 @@ export class Intro extends PureComponent {
                 size={{ height: "full" }}>
                 <ReactQuill
                     className={quillClassname} value={this.props.intro}
-                    readOnly={this.props.permissions ? !this.props.permissions.editCourse : true } placeholder="编写课程相关介绍：课程简介、课程教案、实验内容、教学大纲等之类...."
+                    readOnly={this.props.permissions ? !this.props.permissions.editCourse : true} placeholder="编写课程相关介绍：课程简介、课程教案、实验内容、教学大纲等之类...."
                     onChange={this.handleChange} modules={this.modules} />
             </Box>
         )
@@ -42,7 +42,7 @@ export class Intro extends PureComponent {
 }
 
 export default withTracker((props) => {
-    return{
+    return {
         permissions: Session.get('permissions'),
         ...props
     }
