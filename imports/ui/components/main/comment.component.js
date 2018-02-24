@@ -41,10 +41,14 @@ export class Comment extends PureComponent {
                 <Box direction="row" justify="between" align="center" separator="bottom">
                     <ReactStars
                         count={5}
+                        edit={false}
                         value={this.state.evaluate && this.state.evaluate.map(val => val.star).reduce((total, num) => (total + num))/this.state.evaluate.length}
                         size={24} 
                         color2={'#ffd700'} />
-                    <Value value={this.state.evaluate && this.state.evaluate.map(val => val.star).reduce((total, num) => (total + num))/this.state.evaluate.length} colorIndex="critical" />
+                    <span>
+                        <Value value={this.state.evaluate && (this.state.evaluate.map(val => val.star).reduce((total, num) => (total + num))/this.state.evaluate.length).toFixed(1)} colorIndex="critical" />
+                        分
+                    </span>
                 </Box>
                 {
                     this.props.permissions &&  this.props.permissions.evalCourse && this.state.evaluate && this.state.evaluate.filter(val => {
