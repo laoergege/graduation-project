@@ -35,4 +35,15 @@ export function errorHnadler(error) {
     }
 }
 
+/**
+ * 验证用户身份
+ * @param {*} id 
+ * @param {*} user 
+ */
+export function authID(id, user) {
+    if (!user.profile.roles.includes(id)) {
+        throw (new Meteor.Error('id-error', '用户身份错误！'))
+    }
+}
+
 

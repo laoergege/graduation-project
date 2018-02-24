@@ -18,11 +18,15 @@ import _Menu from 'grommet/components/icons/base/Menu';
 import withAnimate from "../animate";
 import './style.scss';
 import UM from "./um.component";
+import Permissions from "./permissions.component";
+import Notification from "../notification";
 
 export class ManagementCenter extends PureComponent {
 
     state = {
-        hideMenu: false
+        hideMenu: false,
+        path: '',
+        active: 1
     }
 
     hide = {
@@ -38,13 +42,15 @@ export class ManagementCenter extends PureComponent {
 
     componentWillMount() {
         // 定向到 用户管理
-        this.props.history.replace(`${this.props.match.path}/um`)
+        this.props.history.replace(`${this.props.match.path}/um`);
+        this.state.path = this.props.match.path;
     }
 
     render() {
         return (
             <Split flex="right" className="mc">
                 <Sidebar colorIndex='brand' size="small" fixed={true} style={this.state.hideMenu && this.hide} className="mc-sidebar" >
+                    <Notification />
                     <Box pad="medium"></Box>
                     <Header pad={{horizontal: 'medium'}} justify='between'>
                         <Heading tag='h4' strong={true}>
@@ -64,12 +70,21 @@ export class ManagementCenter extends PureComponent {
                     <Box flex='grow'
                         justify='start'>
                         <Menu primary={true}>
-                            <Anchor href='#'
-                                className='active'>
+                            <Anchor path={`${this.props.match.path}/um`} onClick={() => {
+                                this.setState({active: 1});
+                            }}
+                                className={this.state.active === 1 ? 'active' : ''}>
                                 用户管理
                                 </Anchor>
-                            <Anchor href='#'>
+                            {/* <Anchor path={`${this.props.match.path}/permissions`} onClick={() => {
+                                this.setState({active: 2});
+                            }} className={this.state.active === 2 ? 'active' : ''}>
                                 权限管理
+                            </Anchor> */}
+                            <Anchor href='#' onClick={() => {
+                                this.setState({active: 3});
+                            }}  className={this.state.active === 3 ? 'active' : ''}>
+                                课程管理
                             </Anchor>
                         </Menu>
                     </Box>
@@ -111,6 +126,7 @@ export class ManagementCenter extends PureComponent {
                         <Box margin="medium" colorIndex="light-1" size={{height: {min: 'large'}}}>
                             <Switch>
                                 <Route path={`${this.props.match.path}/um`} component={UM}/>
+                                <Route path={`${this.props.match.path}/permissions`} component={Permissions}/>
                             </Switch>
                         </Box>
                     </Box>

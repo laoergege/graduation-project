@@ -6,16 +6,14 @@ export const EvalSchema = new SimpleSchema({
     userid: {
         type: String
     },
+    name: {
+        type: String
+    },
     content: {
-        type: Object,
-        optional: true,
-        blackbox: true
+        type: String,
+        optional: true
     },
-    date: {
-        type: Date,
-        defaultValue: new Date()
-    },
-    score: {
+    star: {
         type: Number
     }
 })
@@ -54,6 +52,10 @@ export const CourseSchema = new SimpleSchema({
         optional: true,
         blackbox: true
     },
+    notice: {
+        type: String,
+        optional: true
+    },
     searchBy: {
         type: String,
         optional: true
@@ -68,11 +70,11 @@ export const CourseSchema = new SimpleSchema({
         defaultValue: -1,
         optional: true
     },
-    // sections: {
-    //     type: [String],
-    //     defaultValue: [],
-    //     optional: true
-    // },
+    resourses: {
+        type: [String],
+        defaultValue: [],
+        optional: true
+    },
     createBy: {
         type: String,
         optional: true
@@ -80,6 +82,19 @@ export const CourseSchema = new SimpleSchema({
 })
 
 export const courses = new Mongo.Collection('courses');
+
+// 文件暂存
+export const resourses = new FilesCollection({
+    collectionName: 'resourses',
+    storagePath: 'assets/resourses'
+});
+
+if (Meteor.isServer) {
+    Meteor.publish('course.resourses', function (resourse) {
+        return resourses.collection.find({_id: {$in: resourse}});
+    }); 
+}
+
 
 if (Meteor.isServer) {
     Meteor.publish('courses', function ({limit, length}) {
@@ -103,6 +118,30 @@ export const editCourse = new ValidatedMethod({
         course.teachers || (course.teachers = [Meteor.userId()]);
 
         // course.status || (course.status = -1);
+
+        courses.upsert({_id: course._id}, {$set: course})
+    }
+})
+
+// 邀请教师
+export const inviteTeacher = new ValidatedMethod({
+    name: 'inviteTeacher',
+    validate: CourseSchema.validator(),
+    run(course) {
+        //验证用户权限
+        auth(this.name);
+
+        courses.upsert({_id: course._id}, {$set: course})
+    }
+})
+
+// 课程评价 
+export const evalCourse = new ValidatedMethod({
+    name: 'evalCourse',
+    validate: CourseSchema.validator(),
+    run(course) {
+        //验证用户权限
+        auth(this.name);
 
         courses.upsert({_id: course._id}, {$set: course})
     }

@@ -6,4 +6,21 @@
         // z-index: 11;
         box-shadow: 0 0 2px 0 rgba(46,62,72,.12), 0 2px 4px 0 rgba(46,62,72,.12);
     }
+
+    .hide-tool{
+        display: none;
+    }
+}
+
+.resource{
+    .dropzone{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 2px #865cd6 dashed;
+        border-radius: 5px;
+        padding-top: 16px;
+    }
 }

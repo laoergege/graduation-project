@@ -132,7 +132,7 @@ export class HW extends PureComponent {
 export default withTracker((props) => {
     let handle;
     if (props.location.pathname.includes('review')) {
-        handle = Meteor.subscribe('Meteor.users.students');
+        handle = Meteor.subscribe('Meteor.users');
         Meteor.subscribe('homeworks', Session.get('homework').courseid);
         Session.set('isReviewing', true);
     }

@@ -12,6 +12,14 @@ import Edit from "grommet/components/icons/base/Edit";
 import Header from "../header";
 import CourseItem from "../courseItem";
 import HwList from "../homework/hw-list.component";
+import Intro from "../main/intro.component";
+import Notice from "./notice.component";
+import TeachersInto from "./teachers.component";
+import Comment from "./comment.component";
+import { evalCourse } from "../../../api/course";
+import { errorHnadler } from "../../../utils/util";
+import { CourseSchema, editCourse, courses } from "../../../api/course";
+import Resourse from "./resourse.component";
 
 export default class Main extends Component {
 
@@ -45,8 +53,65 @@ export default class Main extends Component {
         this.props.history.push('/courses/' + this.props.match.params.name + '/content');
     }
 
+    // 监听用户评价
+    onEvalue = (comment) => {
+        if (comment) {
+            this.course.evaluate.push(comment);
+            CourseSchema.clean(this.course);
+            evalCourse.call(this.course, (error) => {
+                if (error) {
+                    errorHnadler(error);
+                } else {
+                    Session.set('info', { status: 'ok', content: '评价成功！' });
+                }
+            })
+        }
+    }
+
+    // 监听用户上传资源
+    onUp = (resourseid) => {
+        if (resourseid) {
+            this.course.resourses.push(resourseid);
+            CourseSchema.clean(this.course);
+            editCourse.call(this.course, (error) => {
+                if (error) {
+                    errorHnadler(error);
+                } else {
+                    Session.set('info', { status: 'ok', content: '上传成功！' });
+                }
+            })
+        }
+    }
+
+     // 监听用户删除资源
+     onRemove = (resourseid) => {
+        if (resourseid) {
+            this.course.resourses = this.course.resourses.filter(id => id!== resourseid);
+            CourseSchema.clean(this.course);
+            editCourse.call(this.course, (error) => {
+                if (error) {
+                    errorHnadler(error);
+                } else {
+                    Session.set('info', { status: 'ok', content: '删除成功！' });
+                }
+            })
+        }
+    }
+
     componentWillMount() {
         Session.set('course', this.props.course);
+        this.props.history.push(`${this.props.match.url}/介绍`);
+        if (!this.course.teachers.includes(Meteor.userId())) {
+            Session.get('permissions').editCourse = false;
+            Session.set('permissions', Session.get('permissions'));
+        }
+    }
+
+    componentWillReceiveProps() {
+        if (!this.course.teachers.includes(Meteor.userId())) {
+            Session.get('permissions').editCourse = false;
+            Session.set('permissions', Session.get('permissions'));
+        }
     }
 
     render() {
@@ -77,17 +142,26 @@ export default class Main extends Component {
                                 inline={true}
                                 direction='row'
                                 align="baseline">
-                                <Anchor href='#'
+                                <Anchor path={`${this.props.match.url}/介绍`}
                                     className='active'>
-                                    课程简介
+                                    课程介绍
                                 </Anchor>
-                                <Anchor href='#'>
+                                <Anchor path={`${this.props.match.url}/教师介绍`}>
                                     教师简介
                                 </Anchor>
-                                <Anchor href='#'>
+                                <Anchor path={`${this.props.match.url}/评价`}>
                                     评价
                                 </Anchor>
-
+                                <Anchor path={`${this.props.match.url}/资源`}>
+                                    资源下载
+                                </Anchor>
+                                {
+                                    this.props.permissions && this.props.permissions.getHW && (
+                                        <Anchor path={`${this.props.match.url}/作业`}>
+                                            作业
+                                        </Anchor>
+                                    )
+                                }
                                 {
                                     this.props.permissions && this.props.permissions.editCourse && (
                                         <Anchor href='#' onClick={this.release}>
@@ -99,13 +173,6 @@ export default class Main extends Component {
                                     this.props.permissions && this.props.permissions.editCourse && (
                                         <Anchor icon={<Edit />} onClick={this.detail}>
                                             编辑章节内容
-                                        </Anchor>
-                                    )
-                                }
-                                {
-                                    this.props.permissions && this.props.permissions.getHW && (
-                                        <Anchor path={`${this.props.match.url}/homeworks`}>
-                                            作业
                                         </Anchor>
                                     )
                                 }
@@ -123,17 +190,29 @@ export default class Main extends Component {
                     <Box colorIndex="light-1"
                         pad='medium'
                         size={{ width: 'xlarge' }}>
-                        <Route path={`${this.props.match.path}/homeworks`} render={() => {
+                        <Route path={`${this.props.match.path}/作业`} render={() => {
                             return <HwList courseid={this.props.course._id} />
+                        }} />
+                        <Route path={`${this.props.match.path}/介绍`} render={() => {
+                            return <Intro intro={this.props.course.mainInfo} onChange={(content) => {
+                                this.course.mainInfo = content;
+                            }} />
+                        }} />
+                        <Route path={`${this.props.match.path}/教师介绍`} render={() => {
+                            return <TeachersInto teachers={this.props.course.teachers} />
+                        }} />
+                        <Route path={`${this.props.match.path}/评价`} render={() => {
+                            return <Comment evaluate={this.props.course.evaluate} onSubmit={this.onEvalue} />
+                        }} />
+                        <Route path={`${this.props.match.path}/资源`} render={() => {
+                            return <Resourse onUp={this.onUp} courseid={this.props.course._id} onRemove={this.onRemove}/>
                         }} />
                     </Box>
                     <Box
-                        colorIndex="ok"
-                        justify='center'
-                        align='center'
-                        pad='medium'
                         size={{ width: 'small' }}>
-                        Right Side
+                        <Notice content={this.course.notice} onChange={(content) => {
+                            this.course.notice = content;
+                        }} />
                     </Box>
 
                 </Box>
