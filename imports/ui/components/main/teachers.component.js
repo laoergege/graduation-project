@@ -55,7 +55,7 @@ export class TeacherInto extends PureComponent {
                                     this.props.teachers && this.props.teachers.map((val, i) => {
                                         let user = Meteor.users.findOne({ _id: val })
                                         return (
-                                            <Box direction="row" align="center" justify="around" pad="small" key={user._id}>
+                                            <Box direction="row" align="center" justify="around" pad="small" key={user._id} separator="bottom">
                                                 <Image src={user.profile.avater || '/img/teacher.png'} size='small' />
                                                 <Card
                                                     label='教师'

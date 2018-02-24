@@ -47,7 +47,7 @@ export class HwList extends PureComponent {
             <Box>
                 {
                     Session.get('permissions') && Session.get('permissions').addHomework && (
-                        <Box margin="small">
+                        <Box margin="small" direction="row" separator="bottom">
                             <Button icon={<Edit />}
                                 label='添加作业' onClick={this.addHW} />
                         </Box>
@@ -91,6 +91,8 @@ export class HwList extends PureComponent {
                                                         <Anchor label='进入' onClick={this.goHw(val)} />
                                                     )
                                                 }
+
+                                                <Anchor label='数据统计' onClick={this.review(val)} />
 
                                                 {
                                                     Session.get('permissions') && Session.get('permissions').reviewHW && (

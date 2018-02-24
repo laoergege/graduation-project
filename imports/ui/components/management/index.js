@@ -20,6 +20,7 @@ import './style.scss';
 import UM from "./um.component";
 import Permissions from "./permissions.component";
 import Notification from "../notification";
+import Courses from "./courses.component";
 
 export class ManagementCenter extends PureComponent {
 
@@ -81,7 +82,7 @@ export class ManagementCenter extends PureComponent {
                             }} className={this.state.active === 2 ? 'active' : ''}>
                                 权限管理
                             </Anchor> */}
-                            <Anchor href='#' onClick={() => {
+                            <Anchor path={`${this.props.match.path}/courses`} onClick={() => {
                                 this.setState({active: 3});
                             }}  className={this.state.active === 3 ? 'active' : ''}>
                                 课程管理
@@ -126,7 +127,8 @@ export class ManagementCenter extends PureComponent {
                         <Box margin="medium" colorIndex="light-1" size={{height: {min: 'large'}}}>
                             <Switch>
                                 <Route path={`${this.props.match.path}/um`} component={UM}/>
-                                <Route path={`${this.props.match.path}/permissions`} component={Permissions}/>
+                                {/* <Route path={`${this.props.match.path}/permissions`} component={Permissions}/> */}
+                                <Route path={`${this.props.match.path}/courses`} component={Courses}/>                                
                             </Switch>
                         </Box>
                     </Box>

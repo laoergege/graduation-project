@@ -1,5 +1,5 @@
 import { Mongo } from "meteor/mongo";
-import { auth } from "../utils/util";
+import { auth, authID } from "../utils/util";
 
 // 评价
 export const EvalSchema = new SimpleSchema({
@@ -98,8 +98,12 @@ if (Meteor.isServer) {
 
 if (Meteor.isServer) {
     Meteor.publish('courses', function ({limit, length}) {
-        return courses.find({}, {limit: (limit + length)});
+        return courses.find({status: 1}, {limit: (limit + length)});
     });   
+
+    Meteor.publish('courses.all', function () {
+        return courses.find({});
+    });  
 }
 
 // 编辑课程基本信息
@@ -144,5 +148,20 @@ export const evalCourse = new ValidatedMethod({
         auth(this.name);
 
         courses.upsert({_id: course._id}, {$set: course})
+    }
+})
+
+//修改课程状态
+export const adjustStatus = new ValidatedMethod({
+    name: 'adjustStatus',
+    validate: new SimpleSchema({
+        courseid: { type: String },
+        status: { type: Number }
+      }).validator(),
+    run({courseid, status}){
+        //验证用户是否为管理员
+        authID(1, Meteor.user());
+
+        courses.upsert({_id: courseid}, {$set: {status: status}});
     }
 })
