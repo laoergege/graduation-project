@@ -4,6 +4,10 @@ import Box from 'grommet/components/Box';
 import Header from "../../components/header";
 import Main from "../../components/main";
 import Notification from "../../components/notification";
+import Footer from 'grommet/components/Footer';
+import Title from 'grommet/components/Title';
+import Paragraph from 'grommet/components/Paragraph';
+
 
 import { Session } from "meteor/session";
 
@@ -22,12 +26,22 @@ export default class Index extends Component {
                 colorIndex='light-2'
                 separator="bottom"
                 wrap={false}
-                style={{"minHeight": '100vh'}}>
+                style={{ "minHeight": '100vh' }}>
 
-                <Header/>
+                <Header />
 
                 {/* <Main /> */}
                 {this.props.children || '系统出错了！'}
+
+                <Footer justify='center' size='large' colorIndex="light-1">
+                    <Box direction='row'
+                        align='center'
+                        pad={{ "between": "medium" }}>
+                        <Paragraph margin='none'>
+                            © 2018 laoergege
+                        </Paragraph>
+                    </Box>
+                </Footer>
 
                 <Notification />
             </Box>
