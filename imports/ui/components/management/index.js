@@ -14,6 +14,7 @@ import Button from 'grommet/components/Button';
 import Logout from 'grommet/components/icons/base/Logout';
 import Actions from 'grommet/components/icons/base/Actions';
 import _Menu from 'grommet/components/icons/base/Menu';
+import Spinning from 'grommet/components/icons/Spinning';
 
 import withAnimate from "../animate";
 import './style.scss';
@@ -21,6 +22,7 @@ import UM from "./um.component";
 import Permissions from "./permissions.component";
 import Notification from "../notification";
 import Courses from "./courses.component";
+import Bundle from "../../../utils/bundle";
 
 export class ManagementCenter extends PureComponent {
 
@@ -41,6 +43,11 @@ export class ManagementCenter extends PureComponent {
         }))
     }
 
+    homeSetupModule =  async (callBack) => {
+        const HW = (await import("/imports/ui/components/management/home-setup.component.js")).default;
+        callBack(HW);
+    }
+
     componentWillMount() {
         // 定向到 用户管理
         this.props.history.replace(`${this.props.match.path}/um`);
@@ -53,17 +60,23 @@ export class ManagementCenter extends PureComponent {
                 <Sidebar colorIndex='brand' size="small" fixed={true} style={this.state.hideMenu && this.hide} className="mc-sidebar" >
                     <Notification />
                     <Box pad="medium"></Box>
-                    <Header pad={{horizontal: 'medium'}} justify='between'>
+                    <Header pad={{ horizontal: 'medium' }} justify='between'>
                         <Heading tag='h4' strong={true}>
                             公告
                         </Heading>
                     </Header>
-                    <Header pad={{horizontal: 'medium'}} justify='between'>
-                        <Heading tag='h4' strong={true}>
-                            站点统计
-                        </Heading>
-                    </Header>
-                    <Header pad={{horizontal: 'medium'}} justify='between'>
+                    <Box flex='grow'
+                        justify='start'>
+                        <Menu primary={true}>
+                            <Anchor path={`${this.props.match.path}/homeSetup`} onClick={() => {
+                                this.setState({ active: 4 });
+                            }}
+                                className={this.state.active === 4 ? 'active' : ''}>
+                                首页设置
+                                </Anchor>
+                        </Menu>
+                    </Box>
+                    <Header pad={{ horizontal: 'medium' }} justify='between'>
                         <Heading tag='h4' strong={true}>
                             管理
                         </Heading>
@@ -72,7 +85,7 @@ export class ManagementCenter extends PureComponent {
                         justify='start'>
                         <Menu primary={true}>
                             <Anchor path={`${this.props.match.path}/um`} onClick={() => {
-                                this.setState({active: 1});
+                                this.setState({ active: 1 });
                             }}
                                 className={this.state.active === 1 ? 'active' : ''}>
                                 用户管理
@@ -83,13 +96,13 @@ export class ManagementCenter extends PureComponent {
                                 权限管理
                             </Anchor> */}
                             <Anchor path={`${this.props.match.path}/courses`} onClick={() => {
-                                this.setState({active: 3});
-                            }}  className={this.state.active === 3 ? 'active' : ''}>
+                                this.setState({ active: 3 });
+                            }} className={this.state.active === 3 ? 'active' : ''}>
                                 课程管理
                             </Anchor>
                         </Menu>
                     </Box>
-                    <Header pad={{horizontal: 'medium'}} justify='between'>
+                    <Header pad={{ horizontal: 'medium' }} justify='between'>
                         <Heading tag='h4' strong={true}>
                             系统设置
                         </Heading>
@@ -124,11 +137,21 @@ export class ManagementCenter extends PureComponent {
                         </Box>
                     </Header>
                     <Box pad="small">
-                        <Box margin="medium" colorIndex="light-1" size={{height: {min: 'large'}}}>
+                        <Box margin="medium" colorIndex="light-1" size={{ height: { min: 'large' } }}>
                             <Switch>
-                                <Route path={`${this.props.match.path}/um`} component={UM}/>
+                                <Route path={`${this.props.match.path}/um`} component={UM} />
                                 {/* <Route path={`${this.props.match.path}/permissions`} component={Permissions}/> */}
-                                <Route path={`${this.props.match.path}/courses`} component={Courses}/>                                
+                                <Route path={`${this.props.match.path}/courses`} component={Courses} />
+                                <Route path={`${this.props.match.path}/homeSetup`} render={() => {
+                                    return (
+                                        <Bundle load={this.homeSetupModule}>
+                                            {(Comp) => Comp
+                                                ? <Comp />
+                                                : (<Box full={true} align="center" justify="center" direction="row">请稍等... <Spinning /></Box>)
+                                            }
+                                        </Bundle>
+                                    )
+                                }} />
                             </Switch>
                         </Box>
                     </Box>

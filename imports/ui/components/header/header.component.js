@@ -89,7 +89,7 @@ export default class extends Component {
                     <Box pad="small" />
                     <Menu inline={true} direction="row" flex="grow" size="small">
                         <Anchor tag="div">
-                            <Link to="/NotFound">首页</Link>
+                            <Link to="/home">首页</Link>
                         </Anchor>
                         <Anchor href="#" onClick={this.goTo('/courses')}>课程</Anchor>
                         <Anchor href="#">资源</Anchor>

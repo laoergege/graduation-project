@@ -54,6 +54,16 @@ export const addHomework = new ValidatedMethod({
     run(homework) {
         auth('addHomework');
 
+        homeworks.totalScore = 0;
+        // 计算试题总分
+        for (const key in homework.answers) {
+            if (homework.answers.hasOwnProperty(key)) {
+                const element = homework.answers[key];
+                element.totalScore = element.answers.length * element.answers.score;
+                homeworks.totalScore += element.totalScore;
+            }
+        }
+
         homeworks.upsert({ _id: homework._id }, homework);
     }
 })

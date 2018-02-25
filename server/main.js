@@ -9,6 +9,7 @@ import "../imports/api/sections";
 import "../imports/api/chat";
 import "../imports/api/homework";
 import "../imports/api/permissions";
+import "../imports/api/home";
 
 Meteor.startup(() => {
 

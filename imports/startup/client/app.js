@@ -10,6 +10,7 @@ import { courses } from "../../api/course";
 import Main from "../../ui/components/main";
 import CourseDetail from "../../ui/components/courseDetail";
 import '../../api/chat';
+import Home from "../../ui/components/main/home.component";
 
 import Bundle from "../../utils/bundle";
 
@@ -51,7 +52,7 @@ export default class App extends Component {
     render() {
         return (
             <Switch>
-                <Redirect exact from="/" to="/courses" />
+                <Redirect exact from="/" to="/home" />
 
                 <Route path="/managementcenter" render={(props) => {
                     let permissions = Session.get('permissions');
@@ -110,6 +111,8 @@ export default class App extends Component {
                     return (
                         <Index {...props}>
                             <Switch>
+                                <Route exact path="/home" component={Home} />
+
                                 <Route exact path="/courses" component={Courses} />
 
                                 <Route path="/courses/:name/content" render={(props) => {
