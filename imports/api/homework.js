@@ -54,13 +54,14 @@ export const addHomework = new ValidatedMethod({
     run(homework) {
         auth('addHomework');
 
-        homeworks.totalScore = 0;
+        homework.totalScore = 0;
         // 计算试题总分
         for (const key in homework.answers) {
             if (homework.answers.hasOwnProperty(key)) {
                 const element = homework.answers[key];
-                element.totalScore = element.answers.length * element.answers.score;
-                homeworks.totalScore += element.totalScore;
+                element.score = parseInt(element.score);
+                element.totalScore = element.answers.length *  element.score;
+                homework.totalScore += element.totalScore;
             }
         }
 
@@ -86,7 +87,7 @@ export const uphomework = new ValidatedMethod({
         if (Meteor.isServer) {
             let hw = homeworks.findOne({ _id: param.id });
 
-            answers.single.totalScore = parseInt(answers.single.totalScore);    
+            answers.single.totalScore = 0;    
             answers.single.score = parseInt(answers.single.score);        
             hw.answers.single.answers.forEach((val, i) => {
                 if (val === answers.single.answers[i]) {  
@@ -94,13 +95,15 @@ export const uphomework = new ValidatedMethod({
                 }
             })
 
-            answers.blank.totalScore = parseInt(answers.blank.totalScore);
+            answers.blank.totalScore = 0;
             answers.blank.score = parseInt(answers.blank.score);
             hw.answers.blank.answers.forEach((val, i) => {
                 if (answers.blank.answers[i].includes(val)) {
                     answers.blank.totalScore += answers.blank.score;
                 }
             })
+
+            answers.short.totalScore = 0;    
         }
 
         homeworks.update({ _id: param.id }, { $push: { finishers: finisher } });
@@ -113,7 +116,7 @@ export const mark = new ValidatedMethod({
     run({ hwid, userid, short }) {
         // 计算主观题
         if (Meteor.isServer) {
-            short.totalScore = parseInt(short.totalScore);
+            short.totalScore = 0;
             // 评分简答题
             short.answers.forEach(val => {   
                 short.totalScore += parseInt(val.score);   

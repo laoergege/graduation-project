@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { withRouter } from "react-router";
 
 import Box from 'grommet/components/Box';
 import Button from 'grommet/components/Button';
@@ -8,17 +9,20 @@ import NumberInput from 'grommet/components/NumberInput';
 import Add from 'grommet/components/icons/base/Add';
 import Close from 'grommet/components/icons/base/Close';
 import Checkmark from 'grommet/components/icons/base/Checkmark';
+import Layer from 'grommet/components/Layer';
 
 import ReactQuill from 'react-quill';
 
 import { addHomework, uphomework, mark } from "../../../api/homework";
 import { errorHnadler } from "../../../utils/util";
+import comfirm from "../modal/comfirm";
 
-export default class extends PureComponent {
+export class AnswerCard extends PureComponent {
 
     constructor(props) {
         super();
         this.state = {
+            showMsg: false,
             isReviewing: false,
             index: 0,
             single: typeof Session.get('homework') === 'string' ? { answers: [], score: 0, totalScore: 0 } : { ...Session.get('homework').answers.single },
@@ -140,7 +144,8 @@ export default class extends PureComponent {
             if (error) {
                 errorHnadler(error);
             } else {
-                Session.set('info', { status: 'ok', content: '作业布置成功！' })
+                Session.set('info', { status: 'ok', content: '作业布置成功！' });
+                this.props.history.goBack();
             }
         });
     }
@@ -158,7 +163,10 @@ export default class extends PureComponent {
                 if (error) {
                     errorHnadler(error);
                 } else {
-                    Session.set('info', { status: 'ok', content: '作业提交成功！' })
+                    this.setState({ showMsg: true });
+                    setTimeout(() => {
+                        this.props.history.goBack();
+                    }, 3000);
                 }
             })
         }
@@ -195,9 +203,25 @@ export default class extends PureComponent {
         }
     }
 
+    componentWillUnmount() {
+        Session.set('isReviewing', false)
+    }
+
     render() {
         return (
             <Box>
+                {
+                    this.state.showMsg && (
+                        <Layer>
+                            <Box size={{ width: { min: 'medium' }, height: 'small' }} direction="row" justify="center" align="center">
+                                <Checkmark colorIndex="ok" />
+                                <span>
+                                    作业提交成功!系统将结算客观题分数，3秒后退出，总分以后会变化，请时刻关注！
+                                </span>
+                            </Box>
+                        </Layer>
+                    )
+                }
                 <Box direction="row" justify="between" separator="bottom">
                     <Label>
                         学号：{this.props.user && this.props.user.user.profile.num}
@@ -214,7 +238,13 @@ export default class extends PureComponent {
                     <Button label='填空题' onClick={this.toggle(2)} primary={true} style={this.mr} />
                     <Button label='简答题' onClick={this.toggle(3)} primary={true} style={this.mr} />
                     <span>(请将答案填写到对应的题型中)</span>
-                    {Session.get('permissions') && Session.get('permissions').addHomework && !Session.get('isReviewing') && (<Button label='设置答题卡及答案' onClick={this.setup} accent={true} />)}
+                    {Session.get('permissions') && Session.get('permissions').addHomework && !Session.get('isReviewing') && (<Button label='设置答题卡及答案' onClick={() => {
+                        comfirm(null, '作业提交成功后不可修改！', (res) => {
+                            if (res) {
+                                this.setup();
+                            }
+                        })
+                    }} accent={true} />)}
                     {Session.get('permissions') && Session.get('permissions').upHW && (<Button label='提交答题卡' onClick={this.up} accent={true} />)}
                     {Session.get('isReviewing') && Session.get('permissions') && Session.get('permissions').reviewHW && (<Button label='评分' onClick={this._mark} accent={true} />)}
                 </Box>
@@ -230,7 +260,7 @@ export default class extends PureComponent {
                                                 this.state.single.answers[i] = e.target.value;
                                                 this.forceUpdate();
                                             }}
-                                            disabled={Session.get('isReviewing') || false}
+                                                disabled={Session.get('isReviewing') || false}
                                                 className={(Session.get('isReviewing') && Session.get('homework') && typeof Session.get('homework') !== 'string' && Session.get('homework').answers.single.answers[i] !== val) ? 'answer-error' : ''} />
                                         </Box>
                                     )
@@ -275,8 +305,8 @@ export default class extends PureComponent {
                                                 this.state.blank.answers[i] = e.target.value;
                                                 this.forceUpdate();
                                             }}
-                                            disabled={Session.get('isReviewing') || false}
-                                                className={(Session.get('isReviewing') && Session.get('homework') && typeof Session.get('homework') !== 'string'  &&  Session.get('homework').answers.blank.answers[i] !== val) ? 'answer-error' : ''} />
+                                                disabled={Session.get('isReviewing') || false}
+                                                className={(Session.get('isReviewing') && Session.get('homework') && typeof Session.get('homework') !== 'string' && Session.get('homework').answers.blank.answers[i] !== val) ? 'answer-error' : ''} />
                                         </Box>
                                     )
                                 })
@@ -349,7 +379,7 @@ export default class extends PureComponent {
                                             </div>
                                             {
                                                 Session.get('isReviewing') && (
-                                                    <div>评分: <NumberInput defaultValue={val.score || 0}  min={0} max={this.state.short.score} onChange={(e) => {
+                                                    <div>评分: <NumberInput defaultValue={val.score || 0} min={0} max={this.state.short.score} onChange={(e) => {
                                                         this.state.short.answers[i].score = e.target.value;
                                                     }} /></div>
                                                 )
@@ -365,6 +395,8 @@ export default class extends PureComponent {
         )
     }
 }
+
+export default withRouter(AnswerCard);
 
 /**
  * props{

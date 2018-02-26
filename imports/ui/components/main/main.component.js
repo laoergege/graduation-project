@@ -142,9 +142,13 @@ export default class Main extends Component {
                                 <Anchor path={`${this.props.match.url}/评价`}>
                                     评价
                                 </Anchor>
-                                <Anchor path={`${this.props.match.url}/资源`}>
-                                    资源下载
-                                </Anchor>
+                                {
+                                    this.props.permissions && this.props.permissions.getResourse && (
+                                        <Anchor path={`${this.props.match.url}/资源`}>
+                                            资源下载
+                                        </Anchor>
+                                    )
+                                }
                                 {
                                     this.props.permissions && this.props.permissions.getHW && (
                                         <Anchor path={`${this.props.match.url}/作业`}>

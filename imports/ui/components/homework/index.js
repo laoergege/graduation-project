@@ -77,9 +77,7 @@ export class HW extends PureComponent {
                                         <Box>
                                             <Table>
                                                 <TableHeader labels={['学号', '姓名', '完成时间', '操作']}
-                                                    sortIndex={2}
-                                                    sortAscending={true}
-                                                    onSort={() => { }} />
+                                                    />
                                                 <tbody>
                                                     {
                                                         this.props.homework && this.props.homework.finishers.map((val, i) => {
@@ -110,12 +108,16 @@ export class HW extends PureComponent {
                                     )
                             }} />
                             <Route children={() => {
-                                return (
-                                    <ReactQuill
-                                        modules={(Session.get('permissions') && Session.get('permissions').addHomework) ? this.modules : {}}
-                                        onChange={this.handleChange} defaultValue={this.props.homework && this.props.homework.questions}
-                                        readOnly={(Session.get('permissions') && Session.get('permissions').addHomework) ? false : true} />
-                                )
+                                if (this.props.loading1) {
+                                    return (<Box full={true} align="center" justify="center" direction="row">正在加载作业 <Spinning /></Box>)
+                                } else{
+                                    return (
+                                        <ReactQuill
+                                            modules={(Session.get('permissions') && Session.get('permissions').addHomework) ? this.modules : {}}
+                                            onChange={this.handleChange} defaultValue={this.props.homework && this.props.homework.questions}
+                                            readOnly={(Session.get('permissions') && Session.get('permissions').addHomework) ? false : true} />
+                                    )
+                                }
                             }} />
                         </Switch>
                     </Box>
@@ -130,15 +132,18 @@ export class HW extends PureComponent {
 }
 
 export default withTracker((props) => {
-    let handle;
+    let handle, handle1;
     if (props.location.pathname.includes('review')) {
         handle = Meteor.subscribe('Meteor.users');
-        Meteor.subscribe('homeworks', Session.get('homework').courseid);
+        handle1 = Meteor.subscribe('homeworks', Session.get('homework').courseid);
         Session.set('isReviewing', true);
+    }else{
+        handle1 =  Meteor.subscribe('homeworks', Session.get('homework').courseid);
     }
 
     return {
         homework: Session.get('homework')._id ? homeworks.findOne({_id: Session.get('homework')._id}) : null,
-        loading: handle ? !handle.ready() : false 
+        loading: handle ? !handle.ready() : false,
+        loading1: !handle1.ready()
     }
 })(withAnimate(HW));

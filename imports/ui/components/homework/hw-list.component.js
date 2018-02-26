@@ -134,10 +134,14 @@ export class HwList extends PureComponent {
                                                 }
 
                                                 <Anchor label='数据统计' onClick={() => {
-                                                    this.setState({
-                                                        showLayer: true,
-                                                        lineData: this.analysis(val)
-                                                    })
+                                                    if (val.finishers.length !== 0) {
+                                                        this.setState({
+                                                            showLayer: true,
+                                                            lineData: this.analysis(val)
+                                                        })
+                                                    }else{
+                                                        Session.set('info', {status: 'warning', content: '暂无数据！'})
+                                                    }
                                                 }} />
 
                                                 {
