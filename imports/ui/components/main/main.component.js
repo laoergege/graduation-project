@@ -6,6 +6,7 @@ import './main.scss';
 import Box from 'grommet/components/Box';
 import Menu from "grommet/components/Menu";
 import Anchor from "grommet/components/Anchor";
+import Button from "grommet/components/Button";
 import Split from "grommet/components/Split";
 import Edit from "grommet/components/icons/base/Edit";
 
@@ -83,10 +84,10 @@ export default class Main extends Component {
         }
     }
 
-     // 监听用户删除资源
-     onRemove = (resourseid) => {
+    // 监听用户删除资源
+    onRemove = (resourseid) => {
         if (resourseid) {
-            this.course.resourses = this.course.resourses.filter(id => id!== resourseid);
+            this.course.resourses = this.course.resourses.filter(id => id !== resourseid);
             CourseSchema.clean(this.course);
             editCourse.call(this.course, (error) => {
                 if (error) {
@@ -153,16 +154,14 @@ export default class Main extends Component {
                                 }
                                 {
                                     this.props.permissions && this.props.permissions.editCourse && (
-                                        <Anchor href='#' onClick={this.release}>
-                                            发布/更新
+                                        <Anchor icon={<Edit />} onClick={this.detail}>
+                                            编辑章节内容
                                         </Anchor>
                                     )
                                 }
                                 {
                                     this.props.permissions && this.props.permissions.editCourse && (
-                                        <Anchor icon={<Edit />} onClick={this.detail}>
-                                            编辑章节内容
-                                        </Anchor>
+                                        <Button label="发布/更新" onClick={this.release} />
                                     )
                                 }
 
@@ -194,7 +193,7 @@ export default class Main extends Component {
                             return <Comment evaluate={this.props.course.evaluate} onSubmit={this.onEvalue} />
                         }} />
                         <Route path={`${this.props.match.path}/资源`} render={() => {
-                            return <Resourse onUp={this.onUp} courseid={this.props.course._id} onRemove={this.onRemove}/>
+                            return <Resourse onUp={this.onUp} courseid={this.props.course._id} onRemove={this.onRemove} />
                         }} />
                     </Box>
                     <Box

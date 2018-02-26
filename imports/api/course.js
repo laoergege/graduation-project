@@ -97,8 +97,8 @@ if (Meteor.isServer) {
 
 
 if (Meteor.isServer) {
-    Meteor.publish('courses', function ({limit, length}) {
-        return courses.find({status: 1}, {limit: (limit + length)});
+    Meteor.publish('courses', function () {
+        return courses.find({status: 1});
     });   
 
     Meteor.publish('courses.all', function () {

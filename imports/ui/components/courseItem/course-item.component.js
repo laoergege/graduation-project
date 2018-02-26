@@ -76,6 +76,7 @@ export class CourseItem extends PureComponent {
             this.introEle.oninput = this.onChange;
             this.imgEle.oninput = this.onChange;
             
+            this.onChange();
         }
     }
 }

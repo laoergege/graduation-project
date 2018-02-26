@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
+import { BrowserRouter, Route, Switch, Redirect, withRouter } from 'react-router-dom'
 
 import Index from "../../ui/pages/index";
 import NotFound from "../../ui/pages/notFound";
@@ -11,13 +11,14 @@ import Main from "../../ui/components/main";
 import CourseDetail from "../../ui/components/courseDetail";
 import '../../api/chat';
 import Home from "../../ui/components/main/home.component";
+import Error from "../../ui/pages/error/error.page";
 
 import Bundle from "../../utils/bundle";
 
 import Spinning from 'grommet/components/icons/Spinning';
 import Box from 'grommet/components/Box';
 
-export default class App extends Component {
+export class App extends Component {
 
     subscriptions = [];
 
@@ -26,6 +27,14 @@ export default class App extends Component {
         this.subscriptions.push(Meteor.subscribe('courses', { limit: 4, length: 0 }));
         // 获取当前用户消息
         this.subscriptions.push(Meteor.subscribe("msgs"));
+
+    }
+
+     //监听全局错误
+    componentDidCatch(error, info) {
+        console.log(error);
+        console.log(info);
+        this.props.history.push('/error');
     }
 
     componentWillUnmount() {
@@ -54,6 +63,8 @@ export default class App extends Component {
             <Switch>
                 <Redirect exact from="/" to="/home" />
 
+                <Route exact path="/error" component={Error} />
+
                 <Route path="/managementcenter" render={(props) => {
                     let permissions = Session.get('permissions');
 
@@ -61,7 +72,7 @@ export default class App extends Component {
                         return (
                             <Bundle load={this.mcModule}>
                                 {(Comp) => Comp
-                                    ? <Comp {...props}/>
+                                    ? <Comp {...props} />
                                     : (<Box full={true} align="center" justify="center" direction="row">正在进入管理中 <Spinning /></Box>)
                                 }
                             </Bundle>
@@ -78,7 +89,7 @@ export default class App extends Component {
                         return (
                             <Bundle load={this.homeworkModule}>
                                 {(Comp) => Comp
-                                    ? <Comp {...props}/>
+                                    ? <Comp {...props} />
                                     : (<Box full={true} align="center" justify="center" direction="row">正在进入作业系统<Spinning /></Box>)
                                 }
                             </Bundle>
@@ -151,3 +162,5 @@ export default class App extends Component {
         )
     }
 }
+
+export default withRouter(App)

@@ -7,7 +7,7 @@ export default withTracker((props) => {
         let permissions = {};
         Meteor.user().permissions.map(val => {
             permissions[val.method] = val.allow;
-            if (Session.get('course') && !Session.get('course').teachers.includes(Meteor.userId())) {
+            if (Session.get('course') && Session.get('course').teachers && !Session.get('course').teachers.includes(Meteor.userId())) {
                 permissions['editCourse'] = false;
             } 
         })

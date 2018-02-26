@@ -126,6 +126,11 @@ export default class extends Component {
                                         <Anchor icon={<Logout />}
                                             onClick={this.logout}
                                             href='#'>
+                                            密码修改
+                                        </Anchor>
+                                        <Anchor icon={<Logout />}
+                                            onClick={this.logout}
+                                            href='#'>
                                             注销
                                         </Anchor>
                                     </Menu>

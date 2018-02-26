@@ -6,6 +6,11 @@ import Search from "grommet/components/Search";
 
 
 export default class Tool extends PureComponent {
+
+    changeHandler = (e) => {
+        this.props.onChange && this.props.onChange(e.target.value)
+    }
+
     render() {
         return (
             <Box
@@ -21,7 +26,8 @@ export default class Tool extends PureComponent {
                     size={{ width: {min: "large"} }}
                     responsive={false}>
 
-                    <Search inline={true} iconAlign='end' placeHolder='Search' className="none-border"/>
+                    <Search inline={true} iconAlign='end' placeHolder={this.props.searchPH || 'Search'} className="none-border"
+                        onDOMChange={this.changeHandler}/>
 
                     {
                         this.props.buttons.map((val, i) => {
@@ -43,5 +49,9 @@ export default class Tool extends PureComponent {
  * 
  * buttons:[{icon: object, onClick: function, permission: boolean, name: string}]
  * 
- * search: boolean 
+ * search: boolean ,
+ * 
+ * searchPH: string,
+ * 
+ * onChange: function(search)
  */
