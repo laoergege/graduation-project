@@ -190,7 +190,7 @@ export default class Main extends Component {
                             return <TeachersInto courseid={this.props.course._id} />
                         }} />
                         <Route path={`${this.props.match.path}/评价`} render={() => {
-                            return <Comment evaluate={this.props.course.evaluate} onSubmit={this.onEvalue} />
+                            return <Comment courseid={this.props.course._id} onSubmit={this.onEvalue} />
                         }} />
                         <Route path={`${this.props.match.path}/资源`} render={() => {
                             return <Resourse onUp={this.onUp} courseid={this.props.course._id} onRemove={this.onRemove} />

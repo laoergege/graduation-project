@@ -10,6 +10,8 @@ import Paragraph from 'grommet/components/Paragraph';
 import Anchor from "grommet/components/Anchor";
 import Value from 'grommet/components/Value';
 
+import { courses } from "../../../api/course";
+
 export class Comment extends PureComponent {
 
     constructor(props){
@@ -17,8 +19,7 @@ export class Comment extends PureComponent {
 
         this.state = {
             star: 0,
-            content: '课程非常棒！',
-            evaluate: [...props.evaluate]
+            content: '课程非常棒！'
         }
     }
 
@@ -42,16 +43,16 @@ export class Comment extends PureComponent {
                     <ReactStars
                         count={5}
                         edit={false}
-                        value={this.state.evaluate && this.state.evaluate.map(val => val.star).reduce((total, num) => (total + num))/this.state.evaluate.length}
+                        value={this.props.evaluate && this.props.evaluate.length !== 0 && this.props.evaluate.map(val => val.star).reduce((total, num) => (total + num))/this.props.evaluate.length}
                         size={24} 
                         color2={'#ffd700'} />
                     <span>
-                        <Value value={this.state.evaluate && (this.state.evaluate.map(val => val.star).reduce((total, num) => (total + num))/this.state.evaluate.length).toFixed(1)} colorIndex="critical" />
+                        <Value value={this.props.evaluate && this.props.evaluate.length !== 0 && (this.props.evaluate.map(val => val.star).reduce((total, num) => (total + num))/this.props.evaluate.length).toFixed(1)} colorIndex="critical" />
                         分
                     </span>
                 </Box>
                 {
-                    this.props.permissions &&  this.props.permissions.evalCourse && this.state.evaluate && this.state.evaluate.filter(val => {
+                    this.props.permissions &&  this.props.permissions.evalCourse && this.props.evaluate && this.props.evaluate.filter(val => {
                         return val.userid === Meteor.userId();
                     }).length === 0 && (
                         <Box separator="bottom">
@@ -82,7 +83,7 @@ export class Comment extends PureComponent {
                     )
                 }
                 {
-                    this.state.evaluate && this.state.evaluate.map(val => {
+                    this.props.evaluate && this.props.evaluate.map(val => {
                         return (
                             <Box separator="bottom" key={val.userid}>
                                 <Box direction="row" pad="small" align="center" justify="between">
@@ -107,8 +108,10 @@ export class Comment extends PureComponent {
     }
 }
 
-export default withTracker(() => {
+export default withTracker((props) => {
+
     return {
-        permissions: Session.get('permissions')
+        permissions: Session.get('permissions'),
+        evaluate: courses.findOne({ _id: props.courseid }).evaluate || []   
     }
 })(Comment);
