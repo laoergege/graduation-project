@@ -48,7 +48,7 @@ export class Resource extends PureComponent {
         return (
             <Box className="resource">
 
-                <Box size={{ height: { min: 'small' } }} pad="small">
+                <Box size={{ height: { min: 'small' } }} pad="small" align="center" justify="center">
                     <List>
                         {
                             this.props.loading ? (
@@ -80,6 +80,10 @@ export class Resource extends PureComponent {
                                 )
                         }
                     </List>
+                    {
+                        this.props.resourses && this.props.resourses.map(val => val).length === 0 &&
+                       ( <span>暂无资源！</span>)
+                    }
                 </Box>
 
                 {
