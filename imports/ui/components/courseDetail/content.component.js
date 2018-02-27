@@ -26,10 +26,10 @@ export default class Content extends Component {
         super();
         props.editAble || (props.editAble = false);
         props.data || (props.data = { name: '标题...', content: {} });
-        props.onChange || (props.onChange =  () => {});
+        props.onChange || (props.onChange = () => { });
     }
 
-    componentDidMount(){
+    componentDidMount() {
         let ele = findDOMNode(this.title);
         if (ele) {
             ele.contentEditable = this.props.editAble;
@@ -37,39 +37,40 @@ export default class Content extends Component {
         }
     }
 
-    shouldComponentUpdate(nextProps){
+    shouldComponentUpdate(nextProps) {
         if (!nextProps.data) {
-           return false;
+            return false;
         }
         return true;
     }
 
     handleChange = (content, delta, source, editor) => {
         let c = editor.getContents();
-        this.props.onChange({...this.props.data, content: c});
+        this.props.onChange({ ...this.props.data, content: c });
     }
 
     titleChange = (e) => {
         e.preventDefault();
         this.props.data.name = e.target.innerText;
-        this.props.onChange({...this.props.data});
+        this.props.onChange({ ...this.props.data });
     }
 
     render() {
-        let quillClassname = classNames('ql-flex', {'hide-toolbar': this.props.editAble})
 
         return (
             <Box
                 flex={true}
                 colorIndex='light-1' pad="small"
                 size={{ height: "full" }}>
-                <Heading truncate={true} tag="h2" align="center" ref={(comp) => { this.title = comp;}}>
-                    {this.props.data.name || '标题'}
-                </Heading>
-                <ReactQuill
-                    className={quillClassname} value={this.props.data.content}
-                    readOnly={!this.props.editAble} placeholder="开始撰写..." 
-                    onChange={this.handleChange} modules={this.modules} />
+                <div>
+                    <Heading truncate={true} tag="h2" align="center" ref={(comp) => { this.title = comp; }}>
+                        {this.props.data.name || '标题'}
+                    </Heading>
+                    <ReactQuill
+                        className={this.props.editAble ? '' : 'hide-toolbar'} value={this.props.data.content}
+                        readOnly={!this.props.editAble} placeholder="开始撰写..."
+                        onChange={this.handleChange} modules={this.modules} />
+                </div>
             </Box>
         )
     }

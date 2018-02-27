@@ -7,6 +7,7 @@ import Content from "./content.component";
 import Label from 'grommet/components/Label';
 import Menu from 'grommet/components/Menu';
 import Anchor from 'grommet/components/Anchor';
+import Heading from 'grommet/components/Heading';
 
 import { addSection, alterSection, editSection, ContentSchema, delSection, delContent as _delContent } from "../../../api/sections";
 import { errorHnadler } from "../../../utils/util";
@@ -35,7 +36,7 @@ export default class CourseDetail extends PureComponent {
                 }
             })
         } else {
-            let content = { name, order: section.contents.length === 0 ? 0 : (section.contents[section.contents.length - 1].order + 1)  };
+            let content = { name, order: section.contents.length === 0 ? 0 : (section.contents[section.contents.length - 1].order + 1) };
             ContentSchema.clean(content);
             editSection.call({ sectionid: section._id, content }, (error) => {
                 if (error) {
@@ -98,45 +99,54 @@ export default class CourseDetail extends PureComponent {
                 size={{ width: 'full' }}
                 margin={{ top: 'small' }}
                 pad={{ between: "small" }} align="center" direction="column">
-                <Split flex='right'>
-                    <Box colorIndex='light-2' size="small"
-                        pad='small'>
-                        <Sections data={this.props.sections} onClick={this.addSection}
-                            editAble={this.props.editCourse} onChange={this.changeSN} />
-                    </Box>
-                    <Box colorIndex='light-2' size={{ width: "xlarge" }} align='stretch' style={{ height: "100%" }}>
-                        {
-                            this.props.postion && (
-                                <Box direction="row" justify="between" align="baseline" >
-                                    <Label margin="none" truncate={true}>
-                                        {this.props.postion}
-                                    </Label>
-                                    {
-                                        this.props.editCourse && (
-                                            <Menu responsive={false}
-                                                direction='row'>
-                                                <Anchor href='#' onClick={this.delContent}>
-                                                    删除
-                                                </Anchor>
-                                                <Anchor href='#' onClick={this.publish}>
-                                                    发布/更新
-                                                </Anchor>
-                                            </Menu>
-                                        )
-                                    }
-                                </Box>
-                            )
-                        }
-                        {
-                            this.props.postion && (
-                                <Content editAble={this.props.editCourse} data={this.props.sections[this.props.Order] &&
-                                    this.props.sections[this.props.Order].contents[this.props.order]} onChange={(content) => {
-                                        this.currContent = content;
-                                    }} />
-                            )
-                        }
-                    </Box>
-                </Split>
+                {
+                    this.props.sections.length !== 0 ? (
+                        <Split flex='right'>
+                            <Box colorIndex='light-2' size="small"
+                                pad='small'>
+                                <Sections data={this.props.sections} onClick={this.addSection}
+                                    editAble={this.props.editCourse} onChange={this.changeSN} />
+                            </Box>
+                            <Box colorIndex='light-2' size={{ width: "xlarge" }} align='stretch' style={{ height: "100%" }}>
+                                {
+                                    this.props.postion && (
+                                        <Box direction="row" justify="between" align="baseline" >
+                                            <Label margin="none" truncate={true}>
+                                                {this.props.postion}
+                                            </Label>
+                                            {
+                                                this.props.editCourse && (
+                                                    <Menu responsive={false}
+                                                        direction='row'>
+                                                        <Anchor href='#' onClick={this.delContent}>
+                                                            删除
+                                                    </Anchor>
+                                                        <Anchor href='#' onClick={this.publish}>
+                                                            发布/更新
+                                                    </Anchor>
+                                                    </Menu>
+                                                )
+                                            }
+                                        </Box>
+                                    )
+                                }
+                                {
+                                    this.props.postion && (
+                                        <Content editAble={this.props.editCourse} data={this.props.sections[this.props.Order] &&
+                                            this.props.sections[this.props.Order].contents[this.props.order]} onChange={(content) => {
+                                                this.currContent = content;
+                                            }} />
+                                    )
+                                }
+                            </Box>
+                        </Split>
+                    ) : (
+                        <Heading>
+                            暂无内容，敬请期待
+                        </Heading>
+                    )
+                }
+
             </Box>
         )
     }

@@ -7,7 +7,7 @@ export default withTracker((props) => {
     return {
         ...props,
         sections: sections.find({courseid: props.course._id}).fetch(),
-        editCourse: Session.get('permissions').editCourse || false,
+        editCourse:  (Session.get('permissions') && Session.get('permissions').editCourse) || false,
         postion: Session.get('postion'),
         order: Session.get('section'),
         Order: Session.get('Section')

@@ -79,7 +79,7 @@ export default class extends Component {
 
     render() {
         return (
-            <Header justify="center" colorIndex="light-1" separator="bottom">
+            <Header justify="center" colorIndex="light-1" separator="bottom" style={{overFlow: 'hidden'}}>
                 <Box size={{ width: { max: 'xxlarge' } }} direction="row"
                     responsive={false} justify="start" align="baseline"
                     pad={{ horizontal: 'medium' }} flex="grow">
@@ -92,7 +92,6 @@ export default class extends Component {
                             <Link to="/home">首页</Link>
                         </Anchor>
                         <Anchor path="/courses" >课程</Anchor>
-                        <Anchor href="#" >资源</Anchor>
                         {
                             this.props.permissions && this.props.permissions.getChat && (
                                 <Anchor href="#" onClick={() => {

@@ -44,9 +44,18 @@ if (Meteor.isClient) {
         added(doc) {
             msgs.insert(doc);
             if (location.pathname !== '/chat') {
-                Session.set('notice', (Session.get('notice') || 0) + 1);   
+                Session.set('notice', (Session.get('notice') || 0) + 1);
             }
             Session.set(doc.from, true);
+
+            if (Notification.permission === "granted") {
+                (new Notification('消息通知', {
+                    body: '你有一条新消息',
+                    icon: '/public/img/chat.png'
+                })).onclick = () => {
+                    console.log(1)
+                };
+            }
         }
     })
 }
@@ -60,7 +69,7 @@ if (Meteor.isServer) {
         let outlineMsgs = [];
 
         // 发送离线消息
-        messages.find({to: this.userId}).forEach(msg => {
+        messages.find({ to: this.userId }).forEach(msg => {
             let user = Meteor.users.findOne({ _id: msg.from }, { fields: { _id: 1, username: 1, email: 1, profile: 1, permissions: 1, status: 1 } });
             this.added('users', user._id, user);
             this.added('msgs', msg._id, msg);
@@ -70,7 +79,7 @@ if (Meteor.isServer) {
         this.ready();
 
         // 删除离线消息
-        messages.remove({_id: {$in: outlineMsgs}});
+        messages.remove({ _id: { $in: outlineMsgs } });
 
         // 监听消息
         let subscription = sub.subscribe({
@@ -110,9 +119,9 @@ export const sendMsg = new ValidatedMethod({
                 msg.content[msg._type] = chatfiles.findOne({ _id: msg.content[msg._type] }).link();
             }
             // 判断当前用户是否在线
-            if (!Meteor.users.findOne({_id: msg.to}).status.online) {
+            if (!Meteor.users.findOne({ _id: msg.to }).status.online) {
                 messages.insert(msg);
-            }else{
+            } else {
                 sub.next(msg);
             }
         }

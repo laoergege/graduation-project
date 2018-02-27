@@ -25,7 +25,6 @@ export class Intro extends PureComponent {
     }
 
     render() {
-        let quillClassname = classNames({ 'hide-toolbar': this.props.permissions && !this.props.permissions.editCourse })
 
         return (
             <Box
@@ -33,7 +32,7 @@ export class Intro extends PureComponent {
                 colorIndex='light-1' pad="small"
                 size={{ height: "full" }}>
                 <ReactQuill
-                    className={quillClassname} value={this.props.intro}
+                    className={this.props.permissions && this.props.permissions.editCourse ? '' : 'hide-toolbar'} value={this.props.intro || {}}
                     readOnly={this.props.permissions ? !this.props.permissions.editCourse : true} placeholder="编写课程相关介绍：课程简介、课程教案、实验内容、教学大纲等之类...."
                     onChange={this.handleChange} modules={this.modules} />
             </Box>

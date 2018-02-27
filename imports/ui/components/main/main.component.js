@@ -101,7 +101,7 @@ export default class Main extends Component {
 
     componentWillMount() {
         Session.set('course', this.props.course);
-        this.props.history.push(`${this.props.match.url}/介绍`);
+        this.props.history.replace(`${this.props.match.url}/介绍`);
     }
 
     render() {
@@ -157,11 +157,15 @@ export default class Main extends Component {
                                     )
                                 }
                                 {
-                                    this.props.permissions && this.props.permissions.editCourse && (
+                                    this.props.permissions && this.props.permissions.editCourse ? (
                                         <Anchor icon={<Edit />} onClick={this.detail}>
                                             编辑章节内容
                                         </Anchor>
-                                    )
+                                    ) : (
+                                            <Anchor onClick={this.detail}>
+                                                内容阅读
+                                            </Anchor>
+                                        )
                                 }
                                 {
                                     this.props.permissions && this.props.permissions.editCourse && (

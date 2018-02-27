@@ -36,9 +36,19 @@ class Chat extends PureComponent {
         if (Meteor.user().profile.roles.includes(3)) {
             this.subscriptions.push(Meteor.subscribe('Meteor.users.teachers'));
         }
+
+        // Let's check if the browser supports notifications
+        if (!("Notification" in window)) {
+            alert("This browser does not support desktop notification");
+        }
+
+        // Otherwise, we need to ask the user for permission
+        else if (Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         this.subscriptions.forEach(val => {
             val.stop();
         })
@@ -200,7 +210,7 @@ export default withTracker((props) => {
     return {
         msgs: msgs.find({}, { sort: { createAt: -1 } }).fetch(),
         users: Meteor.user().profile.roles.includes(3) ?
-         Meteor.users.find({_id: {$ne:  Meteor.user()._id}}, { sort: { 'status.online': -1 } }).fetch() :
-         Meteor.users.find({$and: [{_id: {$ne:  Meteor.user()._id}}, {'profile.roles': {$nin: [2]}}]}, { sort: { 'status.online': -1 } }).fetch()
+            Meteor.users.find({ _id: { $ne: Meteor.user()._id } }, { sort: { 'status.online': -1 } }).fetch() :
+            Meteor.users.find({ $and: [{ _id: { $ne: Meteor.user()._id } }, { 'profile.roles': { $nin: [2] } }] }, { sort: { 'status.online': -1 } }).fetch()
     }
 })(withAnimate(Chat));
