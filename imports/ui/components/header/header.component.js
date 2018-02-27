@@ -91,7 +91,7 @@ export default class extends Component {
                         <Anchor tag="div">
                             <Link to="/home">首页</Link>
                         </Anchor>
-                        <Anchor href="#" onClick={this.goTo('/courses')}>课程</Anchor>
+                        <Anchor path="/courses" >课程</Anchor>
                         <Anchor href="#" >资源</Anchor>
                         {
                             this.props.permissions && this.props.permissions.getChat && (

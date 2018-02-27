@@ -11,7 +11,15 @@ import "../imports/api/homework";
 import "../imports/api/permissions";
 import "../imports/api/home";
 
+WebApp.connectHandlers.use('*', (req, res, next) => {
+    console.log(1)
+    res.writeHead(301, { 'Location': 'http://localhost:3000' });;
+    res.end();
+})
+
 Meteor.startup(() => {
+
+
 
     // // 创建 root 账号
     // if(!Meteor.users.findOne({username: 'root'})){

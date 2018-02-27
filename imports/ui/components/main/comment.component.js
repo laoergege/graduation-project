@@ -112,6 +112,6 @@ export default withTracker((props) => {
 
     return {
         permissions: Session.get('permissions'),
-        evaluate: courses.findOne({ _id: props.courseid }).evaluate || []   
+        evaluate: courses.findOne({ _id: props.courseid }, {sort: {'evaluate.star': -1}}).evaluate || []   
     }
 })(Comment);

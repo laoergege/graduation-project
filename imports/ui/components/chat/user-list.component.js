@@ -36,7 +36,7 @@ export default class extends PureComponent {
     render() {
         return (
             <Box className="user-list">
-                <Box flex={true} >
+                <Box flex={true} style={{display: 'block'}}>
                     {
                             (
                                 this.props.users ? (
