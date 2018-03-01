@@ -17,7 +17,8 @@ if (Meteor.isServer) {
                     questions: 1,
                     answers: 1,
                     courseid: 1,
-                    finishers: { $elemMatch: { id: this.userId } }
+                    finishers: { $elemMatch: { id: this.userId } },
+                    totalScore: 1
                 }
             }).forEach(doc => {
                 // 格式答题卡

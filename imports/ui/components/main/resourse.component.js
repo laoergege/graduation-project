@@ -52,7 +52,7 @@ export class Resource extends PureComponent {
                     <List>
                         {
                             this.props.loading ? (
-                                <Box align="center" justify="center" direction="row">正在资源 <Spinning /></Box>
+                                <Box align="center" justify="center" direction="row">正在获取资源列表 <Spinning /></Box>
                             ) : (
                                     this.props.resourses.map(val => {
                                         let file = resourses.findOne({ _id: val._id })
@@ -63,7 +63,7 @@ export class Resource extends PureComponent {
                                                     {val.name}
                                                 </span>
                                                 <span className='secondary'>
-                                                    <Anchor href={file.link()}>下载</Anchor>
+                                                    <Anchor download={val.name} href={file.link()}>下载</Anchor>
                                                     <span> </span>
                                                     {
                                                         this.props.permissions && this.props.permissions.editCourse &&

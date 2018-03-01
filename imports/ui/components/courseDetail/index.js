@@ -4,6 +4,10 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { sections } from "../../../api/sections";
 
 export default withTracker((props) => {
+    if (Session.get('courseid')) {
+        Meteor.subscribe('sections', Session.get('courseid'));    
+    }
+    
     return {
         ...props,
         sections: sections.find({courseid: props.course._id}).fetch(),

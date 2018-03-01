@@ -16,10 +16,6 @@ export default class CourseDetail extends PureComponent {
 
     currContent;
 
-    componentWillMount() {
-        Meteor.subscribe('sections', this.props.course._id);
-    }
-
     addSection = (name, type, section) => {
         if (type === 0) {
             let newSection = {
@@ -93,59 +89,66 @@ export default class CourseDetail extends PureComponent {
         })
     }
 
+    componentWillUnmount() {
+        Session.delete('postion');
+        Session.delete('section');
+        Session.delete('Section');      
+    }
+
     render() {
         return (
             <Box
                 size={{ width: 'full' }}
                 margin={{ top: 'small' }}
                 pad={{ between: "small" }} align="center" direction="column">
-                {
-                    this.props.sections.length !== 0 ? (
-                        <Split flex='right'>
-                            <Box colorIndex='light-2' size="small"
-                                pad='small'>
-                                <Sections data={this.props.sections} onClick={this.addSection}
-                                    editAble={this.props.editCourse} onChange={this.changeSN} />
-                            </Box>
-                            <Box colorIndex='light-2' size={{ width: "xlarge" }} align='stretch' style={{ height: "100%" }}>
-                                {
-                                    this.props.postion && (
-                                        <Box direction="row" justify="between" align="baseline" >
-                                            <Label margin="none" truncate={true}>
-                                                {this.props.postion}
-                                            </Label>
-                                            {
-                                                this.props.editCourse && (
-                                                    <Menu responsive={false}
-                                                        direction='row'>
-                                                        <Anchor href='#' onClick={this.delContent}>
-                                                            删除
+                <Split flex='right'>
+                    <Box colorIndex='light-2' size="small"
+                        pad='small'>
+                        <Sections data={this.props.sections} onClick={this.addSection}
+                            editAble={this.props.editCourse} onChange={this.changeSN} />
+                    </Box>
+                    <Box colorIndex='light-2' size={{ width: "xlarge" }} align='stretch' style={{ height: "100%" }}>
+                        {
+                            this.props.sections.length === 0 && (
+                                <Box align="center">
+                                    <Heading>
+                                        暂无内容，敬请期待！
+                                    </Heading>
+                                </Box>
+                            )
+                        }
+                        {
+                            this.props.postion && (
+                                <Box direction="row" justify="between" align="baseline" >
+                                    <Label margin="none" truncate={true}>
+                                        {this.props.postion}
+                                    </Label>
+                                    {
+                                        this.props.editCourse && (
+                                            <Menu responsive={false}
+                                                direction='row'>
+                                                <Anchor href='#' onClick={this.delContent}>
+                                                    删除
                                                     </Anchor>
-                                                        <Anchor href='#' onClick={this.publish}>
-                                                            发布/更新
+                                                <Anchor href='#' onClick={this.publish}>
+                                                    发布/更新
                                                     </Anchor>
-                                                    </Menu>
-                                                )
-                                            }
-                                        </Box>
-                                    )
-                                }
-                                {
-                                    this.props.postion && (
-                                        <Content editAble={this.props.editCourse} data={this.props.sections[this.props.Order] &&
-                                            this.props.sections[this.props.Order].contents[this.props.order]} onChange={(content) => {
-                                                this.currContent = content;
-                                            }} />
-                                    )
-                                }
-                            </Box>
-                        </Split>
-                    ) : (
-                        <Heading>
-                            暂无内容，敬请期待
-                        </Heading>
-                    )
-                }
+                                            </Menu>
+                                        )
+                                    }
+                                </Box>
+                            )
+                        }
+                        {
+                            this.props.postion && (
+                                <Content editAble={this.props.editCourse} data={this.props.sections[this.props.Order] &&
+                                    this.props.sections[this.props.Order].contents[this.props.order]} onChange={(content) => {
+                                        this.currContent = content;
+                                    }} />
+                            )
+                        }
+                    </Box>
+                </Split>
 
             </Box>
         )

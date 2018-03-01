@@ -133,7 +133,7 @@ export class AnswerCard extends PureComponent {
                 short: this.state.short
             },
             finishers: [],
-            courseid: Session.get('course')._id
+            courseid: Session.get('courseid')
         }
 
         if (typeof Session.get('homework') !== 'string') {
@@ -173,7 +173,7 @@ export class AnswerCard extends PureComponent {
     }
 
     _mark = () => {
-        if (!this.props.user) {
+        if (this.props.user && !this.props.user.user.profile.roles.includes(3)) {
             Session.set('info', { status: 'warning', content: '请选择学生！' });
             return;
         }

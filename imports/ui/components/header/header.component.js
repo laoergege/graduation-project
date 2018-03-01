@@ -79,7 +79,7 @@ export default class extends Component {
 
     render() {
         return (
-            <Header justify="center" colorIndex="light-1" separator="bottom" style={{overFlow: 'hidden'}}>
+            <Header justify="center" colorIndex="light-1" separator="bottom" style={{'overflow': 'hidden'}}>
                 <Box size={{ width: { max: 'xxlarge' } }} direction="row"
                     responsive={false} justify="start" align="baseline"
                     pad={{ horizontal: 'medium' }} flex="grow">

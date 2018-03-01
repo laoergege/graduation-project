@@ -14,8 +14,8 @@ import "../management/home.scss";
 export class Home extends PureComponent {
     render() {
         return (
-            <Box>
-                <Box colorIndex="light-1" className="home"  pad="large">
+            <Box flex={true}>
+                <Box colorIndex="light-1" className="home"  pad="large" flex={true}>
                     {
                         !this.props.loading && (
                             <HTMLRenderer plugins={plugins} state={this.props.home} />
@@ -23,7 +23,7 @@ export class Home extends PureComponent {
                     }
 
                 </Box>
-                <Footer justify='center' size='large' colorIndex="light-2">
+                <Footer justify='center' size='large' colorIndex="light-2" style={{marginTop: 'auto'}}>
                     <Box direction='row'
                         align='center'
                         pad={{ "between": "medium" }}>

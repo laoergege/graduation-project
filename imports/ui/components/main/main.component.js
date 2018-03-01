@@ -101,6 +101,7 @@ export default class Main extends Component {
 
     componentWillMount() {
         Session.set('course', this.props.course);
+        Session.set('courseid', this.props.course._id);
         this.props.history.replace(`${this.props.match.url}/介绍`);
     }
 

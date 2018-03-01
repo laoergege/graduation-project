@@ -69,6 +69,10 @@ export default class Courses extends PureComponent {
         }
     }
 
+    componentWillMount(){
+        Session.set('course', null)
+    }
+
     render() {
         return (
             <Box

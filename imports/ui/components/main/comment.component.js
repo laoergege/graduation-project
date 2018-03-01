@@ -43,11 +43,11 @@ export class Comment extends PureComponent {
                     <ReactStars
                         count={5}
                         edit={false}
-                        value={this.props.evaluate && this.props.evaluate.length !== 0 && this.props.evaluate.map(val => val.star).reduce((total, num) => (total + num))/this.props.evaluate.length}
+                        value={this.props.evaluate && this.props.evaluate.length !== 0 ? this.props.evaluate.map(val => val.star).reduce((total, num) => (total + num))/this.props.evaluate.length : 0}
                         size={24} 
                         color2={'#ffd700'} />
                     <span>
-                        <Value value={this.props.evaluate && this.props.evaluate.length !== 0 && (this.props.evaluate.map(val => val.star).reduce((total, num) => (total + num))/this.props.evaluate.length).toFixed(1)} colorIndex="critical" />
+                        <Value value={this.props.evaluate && this.props.evaluate.length !== 0 ? (this.props.evaluate.map(val => val.star).reduce((total, num) => (total + num))/this.props.evaluate.length).toFixed(1) : 0} colorIndex="critical" />
                         分
                     </span>
                 </Box>
@@ -60,6 +60,7 @@ export class Comment extends PureComponent {
                                 <ReactStars
                                     count={5}
                                     onChange={this.handleChange}
+                                    half={false}
                                     size={24}
                                     color2={'#ffd700'} />
                                 <Anchor
