@@ -22,18 +22,22 @@ export default class Tool extends PureComponent {
                 <Box
                     colorIndex="light-1"
                     direction="row" justify="around" align="center"
-                    style={{padding: "5px 12px"}}
-                    size={{ width: {min: "large"} }}
+                    style={{ padding: "5px 12px" }}
+                    size={{ width: { min: "large" } }}
                     responsive={false}>
 
+                    {
+                        this.props.controllers
+                    }
+
                     <Search inline={true} iconAlign='end' placeHolder={this.props.searchPH || 'Search'} className="none-border"
-                        onDOMChange={this.changeHandler}/>
+                        onDOMChange={this.changeHandler} />
 
                     {
                         this.props.buttons.map((val, i) => {
-                            if(val.permission){
+                            if (val.permission) {
                                 let Icon = val.icon;
-                                return  (<Anchor icon={<Icon />} key={i} href='#' style={{height:'3rem'}} onClick={val.onClick}>{val.name}</Anchor>)
+                                return (<Anchor icon={<Icon />} key={i} href='#' style={{ height: '3rem' }} onClick={val.onClick}>{val.name}</Anchor>)
                             }
                         })
                     }

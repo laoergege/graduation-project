@@ -13,13 +13,14 @@ import Heading from "grommet/components/Heading";
 import createModal from "../modal";
 import CourseItem from "../courseItem";
 import Spinning from 'grommet/components/icons/Spinning';
-
+import CheckBox from 'grommet/components/CheckBox';
 
 export default class Courses extends PureComponent {
 
     state = {
         page: 1,
-        search: ''
+        search: '',
+        related: false
     }
 
     // 添加课程
@@ -69,8 +70,18 @@ export default class Courses extends PureComponent {
         }
     }
 
+    // 控制显示与我相关课程
+    relatedMe = () => {
+        this.setState((pre) => {
+            return {
+                related: !pre.related
+            }
+        })
+    }
+
     componentWillMount(){
-        Session.set('course', null)
+        Session.set('course', null);
+
     }
 
     render() {
@@ -93,7 +104,10 @@ export default class Courses extends PureComponent {
                         this.setState({
                             search: name
                         })
-                    }}/>
+                    }} controllers={[
+                       (this.props.permissions && this.props.permissions.editCourse && <CheckBox key={1} label='我的课程' onChange={this.relatedMe} 
+                        toggle={true} checked={this.related}/>)
+                    ]}/>
 
                     {
                         this.props.loading ? (
@@ -102,6 +116,13 @@ export default class Courses extends PureComponent {
                                 <Tiles fill={true} flush={false} style={{ width: "auto" }} onMore={this.onMore} selectable={true}>
                                     {
                                         this.props.courses && this.props.courses
+                                        .filter(val => {
+                                            if (this.state.related) {
+                                                return val.teachers.includes(Meteor.userId())
+                                            }else{
+                                                return true;
+                                            }
+                                        })                                        
                                         .filter(val => val.name.includes(this.state.search))
                                         .slice(0, this.state.page * 4)
                                         .map((val, i) => {

@@ -45,6 +45,7 @@ export default class Main extends Component {
 
     itemChange = (img, title, intro) => {
         if (this.course) {
+            this.course.name= title;
             this.course.info = { img, title, intro };
         }
     }

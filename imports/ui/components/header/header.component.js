@@ -18,6 +18,7 @@ import Logout from 'grommet/components/icons/base/Logout';
 import SettignsOption from 'grommet/components/icons/base/SettignsOption';
 
 import { msgs } from "../../../api/chat";
+import Modifypass from "../modal/Modifypass";
 
 export default class extends Component {
 
@@ -77,6 +78,11 @@ export default class extends Component {
         }
     }
 
+    // 修改密码
+    passModel = () => {
+        createLayer(<Modifypass/>, document.getElementById('layer'));
+    }
+
     render() {
         return (
             <Header justify="center" colorIndex="light-1" separator="bottom" style={{'overflow': 'hidden'}}>
@@ -122,14 +128,12 @@ export default class extends Component {
                                                 </Anchor>
                                             )
                                         }
-                                        <Anchor icon={<Logout />}
-                                            onClick={this.logout}
-                                            href='#'>
+                                        <Anchor icon={<SettignsOption />}
+                                            onClick={this.passModel}>
                                             密码修改
                                         </Anchor>
                                         <Anchor icon={<Logout />}
-                                            onClick={this.logout}
-                                            href='#'>
+                                            onClick={this.logout}>
                                             注销
                                         </Anchor>
                                     </Menu>
@@ -145,10 +149,8 @@ export default class extends Component {
                                 onSubmit={(user) => {
                                     this.login(user, this.toggoleLogForm)
                                 }}
-                                title='Welcome to login'
-                                secondaryText='please input your username and password'
-                                forgotPassword={<Anchor href='#' label='Forgot password?' />}
-                                rememberMe={true}
+                                title='欢迎登陆'
+                                secondaryText='请输入用户名和密码'
                                 usernameType='text' />
                         </Layer>
                     )

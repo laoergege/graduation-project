@@ -1,5 +1,6 @@
 import { Accounts } from 'meteor/accounts-base';
 import { authID } from "../utils/util";
+import { check } from 'meteor/check'
 
 if (Meteor.isServer) {
     Meteor.publish('Meteor.users.initials', function () {

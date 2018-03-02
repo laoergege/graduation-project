@@ -49,12 +49,10 @@ if (Meteor.isClient) {
             Session.set(doc.from, true);
 
             if (Notification.permission === "granted") {
-                (new Notification('消息通知', {
+                new Notification('消息通知', {
                     body: '你有一条新消息',
                     icon: '/public/img/chat.png'
-                })).onclick = () => {
-                    console.log(1)
-                };
+                })
             }
         }
     })

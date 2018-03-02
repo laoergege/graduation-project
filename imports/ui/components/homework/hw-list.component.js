@@ -163,19 +163,20 @@ export class HwList extends PureComponent {
                                 showLayer: false
                             })
                         }}>
-                            <Box size={{ width: { min: 'medium' }, height: { min: 'medium' } }} justify="center" align="center">
-                                <BarChart width={730} height={250} data={this.state.lineData}>
+                            <div style={{padding: '12px 0'}}>
+                                <BarChart width={600} height={300} data={this.state.lineData}>
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" name="区间" >
-                                        <Label value="分数区间" position="bottom" />
+                                    <XAxis dataKey="name"  >
+                                      
                                     </XAxis>
                                     <YAxis dataKey="count" interval={1}>
-                                        <Label value="人数" position="left" />
+                                      
                                     </YAxis>
                                     <Tooltip />
-                                    <Bar dataKey="count" fill="#8884d8" />
+                                    <Legend />
+                                    <Bar dataKey="count" fill="#8884d8" name="人数"/>
                                 </BarChart>
-                            </Box>
+                            </div>
                         </Layer>
                     )
                 }

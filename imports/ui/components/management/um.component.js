@@ -284,7 +284,7 @@ export class UM extends PureComponent {
                                             <FormFields>
                                                 <FormField label="权限">
                                                     {
-                                                        this.state.target && this.state.target.permissions.map((val, i) => (
+                                                        this.state.target && this.state.target.permissions && this.state.target.permissions.map((val, i) => (
                                                             <CheckBox label={val.name} key={val.name} checked={val.allow} onChange={(e) => {
                                                                 this.state.target.permissions[i].allow = true;
                                                                 this.setState({

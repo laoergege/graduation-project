@@ -30,12 +30,8 @@ class Chat extends PureComponent {
         value: ''
     }
 
-    subscriptions = [];
-
     componentWillMount() {
-        if (Meteor.user().profile.roles.includes(3)) {
-            this.subscriptions.push(Meteor.subscribe('Meteor.users.teachers'));
-        }
+       
 
         // Let's check if the browser supports notifications
         if (!("Notification" in window)) {
@@ -46,12 +42,6 @@ class Chat extends PureComponent {
         else if (Notification.permission !== "denied") {
             Notification.requestPermission();
         }
-    }
-
-    componentWillUnmount() {
-        this.subscriptions.forEach(val => {
-            val.stop();
-        })
     }
 
     send = () => {
@@ -206,7 +196,10 @@ class Chat extends PureComponent {
 }
 
 export default withTracker((props) => {
-    console.log(msgs.find({}, { sort: { createAt: -1 } }).fetch())
+    if (Meteor.user().profile.roles.includes(3)) {
+        Meteor.subscribe('Meteor.users.teachers');
+    }
+
     return {
         msgs: msgs.find({}, { sort: { createAt: -1 } }).fetch(),
         users: Meteor.user().profile.roles.includes(3) ?

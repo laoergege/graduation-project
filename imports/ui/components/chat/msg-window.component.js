@@ -67,7 +67,7 @@ export default class extends PureComponent {
                         </Heading>
                         <span>{`${this.toDecimal(msg.content.size / (1024 * 1024))}M`}</span>
                     </Box>
-                    { msg.content[msg._type] ? (<Anchor icon={<Download />} href={msg.content[msg._type]} download/>) : null }
+                    { msg.content[msg._type] ? (<Anchor icon={<Download />} href={msg.content[msg._type]} download={msg.content.name}/>) : null }
                 </Box>
             </Box>
         </Box>)
