@@ -44,7 +44,7 @@ export const editUser = new ValidatedMethod({
             }else{
                 Accounts.createUser({
                     username: user.username,
-                    password: '123456',
+                    password: '123456', // 默认密码
                     profile: {
                         name: user.profile.name,
                         avater: '',

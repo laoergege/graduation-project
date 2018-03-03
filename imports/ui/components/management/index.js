@@ -48,6 +48,11 @@ export class ManagementCenter extends PureComponent {
         callBack(HW);
     }
 
+    ActiveModule = async (callBack) => {
+        const HW = (await import("/imports/ui/components/management/active.component.js")).default;
+        callBack(HW);
+    }
+
     componentWillMount() {
         // 定向到 用户管理
         this.props.history.replace(`${this.props.match.path}/um`);
@@ -73,6 +78,22 @@ export class ManagementCenter extends PureComponent {
                             }}
                                 className={this.state.active === 4 ? 'active' : ''}>
                                 首页设置
+                                </Anchor>
+                        </Menu>
+                    </Box>
+                    <Header pad={{ horizontal: 'medium' }} justify='between'>
+                        <Heading tag='h4' strong={true}>
+                            监控
+                        </Heading>
+                    </Header>
+                    <Box flex='grow'
+                        justify='start'>
+                        <Menu primary={true}>
+                            <Anchor path={`${this.props.match.path}/active`} onClick={() => {
+                                this.setState({ active: 5});
+                            }}
+                                className={this.state.active === 5 ? 'active' : ''}>
+                                用户活跃
                                 </Anchor>
                         </Menu>
                     </Box>
@@ -152,6 +173,16 @@ export class ManagementCenter extends PureComponent {
                                         </Bundle>
                                     )
                                 }} />
+                                <Route path={`${this.props.match.path}/active`} render={() => {
+                                    return (
+                                        <Bundle load={this.ActiveModule}>
+                                            {(Comp) => Comp
+                                                ? <Comp />
+                                                : (<Box full={true} align="center" justify="center" direction="row">请稍等... <Spinning /></Box>)
+                                            }
+                                        </Bundle>
+                                    )
+                                }}  />                                
                             </Switch>
                         </Box>
                     </Box>

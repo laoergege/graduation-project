@@ -10,6 +10,7 @@ import "../imports/api/chat";
 import "../imports/api/homework";
 import "../imports/api/permissions";
 import "../imports/api/home";
+import "../imports/api/active";
 
 WebApp.connectHandlers.use('*', (req, res, next) => {
     console.log(1)
