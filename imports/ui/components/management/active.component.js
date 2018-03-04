@@ -97,8 +97,7 @@ export class Active extends PureComponent {
                                     <tbody>
                                         {
                                             this.props.users.filter(val => {
-                                                return val.profile.name.includes(this.state.search) ||
-                                                    val.profile.username.includes(this.state.search) 
+                                                return val.username.includes(this.state.search) 
                                             })
                                                 .slice(this.state.page * 10 - 10, this.state.page * 10)
                                                 .map(user => {
@@ -131,9 +130,13 @@ export class Active extends PureComponent {
                     <Box  style={{flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                         <Box pad="small">{`当前在线人数:${this.props.users.filter(user => user.status.online).length}`}</Box>
                         <div>
-                            <LineChart width={730} height={250} data={this.props.actives}>
+                            <p>近5天用户活跃量：</p>
+                            <LineChart width={800} height={250} data={this.props.actives}>
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
+                                <XAxis dataKey="time" tickFormatter={(val) => {
+                                    let d = new Date(val);
+                                    return `${d.getMonth()+1}.${d.getDate()}`
+                                }} />
                                 <YAxis />
                                 <Tooltip />
                                 <L />
@@ -156,7 +159,7 @@ export default withTracker(() => {
         loading: !handle.ready(),
         loading1: !handle1.ready(),        
         users: Meteor.users.find({}, {sort: {'status.online': -1}}).fetch(),
-        actives: actives.find({}, {sort: {_id: 1}}).fetch()
+        actives: actives.find({}, {sort: {time: 1}}).fetch()
     }
 })(Active)
 
