@@ -101,16 +101,17 @@ export class Active extends PureComponent {
                                             })
                                                 .slice(this.state.page * 10 - 10, this.state.page * 10)
                                                 .map(user => {
+                                                    console.log(user)
                                                     return (
-                                                        <TableRow key={user._id} style={user.status.online ? this.online : this.outline}>
+                                                        <TableRow key={user._id} style={user.status && user.status.online ? this.online : this.outline}>
                                                             <td>
                                                                 {user.username}
                                                             </td>
                                                             <td>
-                                                                <Timestamp value={user.status.lastLogin ? user.status.lastLogin.date : '' } />
+                                                                <Timestamp value={user.status && user.status.lastLogin ? user.status.lastLogin.date : '' } />
                                                             </td>
                                                             <td>
-                                                                {user.status.lastLogin && user.status.lastLogin.ipAddr}
+                                                                {user.status && user.status.lastLogin && user.status.lastLogin.ipAddr}
                                                             </td>
                                                         </TableRow>
                                                     )
@@ -128,14 +129,14 @@ export class Active extends PureComponent {
                         </Box>
                     </Box>
                     <Box  style={{flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                        <Box pad="small">{`当前在线人数:${this.props.users.filter(user => user.status.online).length}`}</Box>
+                        <Box pad="small">{`当前在线人数:${this.props.users.filter(user => user.status && user.status.online).length}`}</Box>
                         <div>
-                            <p>近5天用户活跃量：</p>
+                            <p>近5小时内用户活跃量：</p>
                             <LineChart width={800} height={250} data={this.props.actives}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="time" tickFormatter={(val) => {
                                     let d = new Date(val);
-                                    return `${d.getMonth()+1}.${d.getDate()}`
+                                    return `${d.getMonth()+1}.${d.getDate()}-${d.getHours()}`
                                 }} />
                                 <YAxis />
                                 <Tooltip />

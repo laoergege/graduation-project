@@ -6,9 +6,7 @@ if (Meteor.isServer) {
 
     let doc = actives.findOne({}, { sort: { time: -1 }});
 
-    console.log((new Date(doc.time)).getDate())
-
-    if ((new Date(doc.time)).getDate() !== (new Date()).getDate()) {
+    if ((new Date(doc.time)).getDate() !== (new Date()).getDate()  || (new Date(doc.time)).getHours() !== (new Date()).getHours()) {
         actives.insert({
             time: Date.now(),
             online: Meteor.users.find({ "status.online": true }).count(),
@@ -16,22 +14,27 @@ if (Meteor.isServer) {
         })
     
     }
+
+    // actives.insert({
+    //     time: Date.now(),
+    //     online: Meteor.users.find({ "status.online": true }).count(),
+    //     outline: Meteor.users.find({ "status.online": false }).count()
+    // })
+
  
-    // 每一天检测用户活跃度
+    // 每一小时检测用户活跃度
     Meteor.setInterval(function (params) {
         actives.insert({
             time: Date.now(),
             online: Meteor.users.find({ "status.online": true }).count(),
             outline: Meteor.users.find({ "status.online": false }).count()
         })
-    }, 24 * 3600 * 1000);
+    }, 3600 * 1000);
 
     Meteor.users.find().observe({
         changed: function (newDocument, oldDocument) {
 
             let id = actives.findOne({}, {sort: {time: -1}})._id;
-
-            console.log(id)
            
             actives.update(
                 { _id:  id},
@@ -43,7 +46,7 @@ if (Meteor.isServer) {
     });
 
     Meteor.publish('actives', function () {
-        return actives.find({}, { sort: { _id: -1 }, limit: 5 });
+        return actives.find({}, { sort: { time: -1 }, limit: 5 });
     })
 }
 

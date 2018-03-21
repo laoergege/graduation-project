@@ -90,7 +90,7 @@ export default class extends Component {
                     responsive={false} justify="start" align="baseline"
                     pad={{ horizontal: 'medium' }} flex="grow">
                     <Title>
-                        数据库系统与应用
+                        数据库系统与应用指导平台
                     </Title>
                     <Box pad="small" />
                     <Menu inline={true} direction="row" flex="grow" size="small">

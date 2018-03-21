@@ -166,7 +166,7 @@ export class AnswerCard extends PureComponent {
                     this.setState({ showMsg: true });
                     setTimeout(() => {
                         this.props.history.goBack();
-                    }, 3000);
+                    }, 4000);
                 }
             })
         }
@@ -245,11 +245,18 @@ export class AnswerCard extends PureComponent {
                             }
                         })
                     }} accent={true} />)}
-                    {Session.get('permissions') && Session.get('permissions').upHW && (<Button label='提交答题卡' onClick={this.up} accent={true} />)}
+                    {Session.get('permissions') && Session.get('permissions').upHW && (<Button label='提交答题卡' onClick={() => {
+                        comfirm(null, '提交作业后不可修改，确认提交作业？', (res) => {
+                            if (res) {
+                                this.up();
+                            }
+                        })
+                    }} accent={true} />)}
                     {Session.get('isReviewing') && Session.get('permissions') && Session.get('permissions').reviewHW && (<Button label='评分' onClick={this._mark} accent={true} />)}
                 </Box>
                 {this.state.index === 1 && (
                     <Box key={1}>
+                        <p>单项分值：{this.state.single.score || 0}</p>
                         <Box direction="row" wrap={true} align="center" flex={true}>
                             {
                                 this.state.single.answers.map((val, i) => {
@@ -295,6 +302,7 @@ export class AnswerCard extends PureComponent {
                 )}
                 {this.state.index === 2 && (
                     <Box flex={true} key={2}>
+                     <p>单项分值：{this.state.blank.score || 0}</p>
                         <Box flex={true}>
                             {
                                 this.state.blank.answers.map((val, i) => {
@@ -340,6 +348,7 @@ export class AnswerCard extends PureComponent {
                 )}
                 {this.state.index === 3 && (
                     <Box key={3}>
+                         <p>单项分值：{this.state.short.score || 0}</p>
                         {
                             Session.get('permissions') && Session.get('permissions').addHomework && !Session.get('isReviewing') && (
                                 <Box direction="row" align="center">

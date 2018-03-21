@@ -34,7 +34,7 @@ export class App extends Component {
     componentDidCatch(error, info) {
         console.log(error);
         console.log(info);
-        this.props.history.push('/error');
+        this.props.history.push('/');
     }
 
     componentWillUnmount() {
@@ -127,7 +127,7 @@ export class App extends Component {
                                 <Route exact path="/courses" component={Courses} />
 
                                 <Route path="/courses/:name/content" render={(props) => {
-                                    let course = courses.find({ name: props.match.params.name }).fetch()[0];
+                                    let course = courses.find({ _id: props.match.params.name }).fetch()[0];
 
                                     if (course) {
                                         return (<CourseDetail {...props} course={course} />)
@@ -138,7 +138,7 @@ export class App extends Component {
 
                                 <Route path="/courses/:name" render={(props) => {
 
-                                    let course = courses.find({ name: props.match.params.name }).fetch()[0];
+                                    let course = courses.find({ _id: props.match.params.name }).fetch()[0];
 
                                     if (course) { //从课程列表页进入课程页
                                         return (<Main {...props} course={course} />);

@@ -113,6 +113,7 @@ export class HW extends PureComponent {
                                 } else{
                                     return (
                                         <ReactQuill
+                                            className={this.props.permissions && this.props.permissions.editCourse ? '' : 'hide-toolbar'} 
                                             modules={(Session.get('permissions') && Session.get('permissions').addHomework) ? this.modules : {}}
                                             onChange={this.handleChange} defaultValue={this.props.homework && this.props.homework.questions}
                                             readOnly={(Session.get('permissions') && Session.get('permissions').addHomework) ? false : true} />
@@ -144,6 +145,7 @@ export default withTracker((props) => {
     return {
         homework: Session.get('homework')._id ? homeworks.findOne({_id: Session.get('homework')._id}) : null,
         loading: handle ? !handle.ready() : false,
-        loading1: !handle1.ready()
+        loading1: !handle1.ready(),
+        permissions: Session.get('permissions')
     }
 })(withAnimate(HW));

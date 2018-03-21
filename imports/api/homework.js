@@ -6,7 +6,7 @@ export const homeworks = new Mongo.Collection('homeworks');
 if (Meteor.isServer) {
     Meteor.publish('homeworks', function (courseid) {
 
-        if (Meteor.user().profile.roles.includes(3)) {
+        if (Meteor.user() && Meteor.user().profile.roles.includes(3)) {
             // 过滤其他学生的答案
             homeworks.find({ courseid: courseid }, {
                 fields: {

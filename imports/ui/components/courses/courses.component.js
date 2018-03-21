@@ -105,7 +105,7 @@ export default class Courses extends PureComponent {
                             search: name
                         })
                     }} controllers={[
-                       (this.props.permissions && this.props.permissions.editCourse && <CheckBox key={1} label='我的课程' onChange={this.relatedMe} 
+                       (this.props.permissions && this.props.permissions.editCourse && <CheckBox key={1} label='相关课程' onChange={this.relatedMe} 
                         toggle={true} checked={this.related}/>)
                     ]}/>
 
@@ -136,7 +136,7 @@ export default class Courses extends PureComponent {
                                                         style={{ position: "absolute", right: "0.5rem", bottom: "0.5rem" }}
                                                         onClick={(e) => {
                                                             e.preventDefault();
-                                                            this.detail(this.props.match.path + '/' + val.name)
+                                                            this.detail(this.props.match.path + '/' + val._id)
                                                         }} />
                                                 </Tile>
 
